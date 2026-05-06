@@ -341,10 +341,14 @@ class StartOffice:
         def check_connection():
             self.ollama_manager = OllamaManager()
             if self.ollama_manager.test_connection():
-                self.ai_status_label.config(text="Статус: Подключено", foreground="green")
+                # Обновляем статус если UI уже создан
+                if hasattr(self, 'ai_status_label'):
+                    self.ai_status_label.config(text="Статус: Подключено", foreground="green")
                 self.logger.info("Подключение к Ollama установлено")
             else:
-                self.ai_status_label.config(text="Статус: Ошибка подключения", foreground="red")
+                # Обновляем статус если UI уже создан
+                if hasattr(self, 'ai_status_label'):
+                    self.ai_status_label.config(text="Статус: Ошибка подключения", foreground="red")
                 self.logger.error("Не удалось подключиться к Ollama")
         
         threading.Thread(target=check_connection, daemon=True).start()

@@ -40,11 +40,13 @@ class DatabaseManager:
         """Инициализация sqlite3 базы данных"""
         try:
             # Подключаемся к базе данных
+            self.conn = sqlite3.connect(self.db_path)
+            self.conn.row_factory = sqlite3.Row  # Для доступа по именам колонок
             
-            # Если база данных не существует, создаем из SQL файла
+            # Если база данных не существует, создаем таблицы
             if not self.db_path.exists():
-                self.logger.info("Создание базы данных из SQL файла")
-                self._create_from_sql()
+                self.logger.info("Создание таблиц базы данных")
+                self._create_tables_manually()
             else:
                 self.logger.info("База данных уже существует")
             

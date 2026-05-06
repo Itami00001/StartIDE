@@ -334,3 +334,41 @@
 2026-05-07 01:41:03 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
 [2026-05-07 01:41:20] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: Привет...
 2026-05-07 01:41:20 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: Привет...
+[2026-05-07 01:45:28] INFO: APP_START - StartOffice запущена
+2026-05-07 01:45:28 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:45:28] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:45:28 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:45:28] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:45:28 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:45:30] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:45:30 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:45:55] ERROR: ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'refresh_project_details'
+2026-05-07 01:45:55 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'refresh_project_details'
+[2026-05-07 01:47:18] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+2026-05-07 01:47:18 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+[2026-05-07 01:47:28] INFO: FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt
+2026-05-07 01:47:28 - AppLogger - INFO - FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt
+[2026-05-07 01:47:29] INFO: VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+2026-05-07 01:47:29 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+[2026-05-07 01:47:40] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+2026-05-07 01:47:40 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+[2026-05-07 01:47:41] INFO: VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+2026-05-07 01:47:41 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+[2026-05-07 01:47:52] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+2026-05-07 01:47:52 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+[2026-05-07 01:47:59] INFO: APP_START - StartIDE запущена
+2026-05-07 01:47:59 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 01:47:59] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:47:59 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:47:59] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:47:59 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:48:01] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 01:48:01 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 01:48:01] WARNING: WARNING - Голосовой менеджер недоступен
+2026-05-07 01:48:01 - AppLogger - WARNING - WARNING - Голосовой менеджер недоступен
+[2026-05-07 01:48:08] INFO: PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+2026-05-07 01:48:08 - AppLogger - INFO - PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+[2026-05-07 01:48:30] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 01:48:30 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 01:48:55] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: ...
+2026-05-07 01:48:55 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: ...
