@@ -1,0 +1,19 @@
+=== GIT КОНТЕКСТ ===
+Проект: project_1
+Ветка: master
+Remote: https://github.com/Itami00001/StartIDE.git
+Последний коммит: 75d5b015 (2026-05-05 15:27:23)
+
+=== СТАТУС РЕПОЗИТОРИЯ ===
+⚠️ Есть изменения:
+  Новые: StartIDE/__pycache__/, StartIDE/voice_manager.py, StartOffice/__pycache__/, StartOffice/voice_input_manager.py, context/, database_development_plan.md, shared/__pycache__/app_logger.cpython-310.pyc, shared/__pycache__/database_manager.cpython-310.pyc, shared/__pycache__/git_manager.cpython-310.pyc, shared/app_logger.py, shared/database_manager.py, shared/git_manager.py
+  В индексе: env.example, OCKER_SETUP.md, ongoAdmin/__init__.py, EADME.md, ETUP.md, tartIDE/main.py, tartOffice/main.py, heck-ollama.bat, ocker-compose.yml, xample_mongodb_usage.py, ongo-init.js, equirements.txt, hared/__init__.py, hared/__pycache__/__init__.cpython-310.pyc, hared/mongodb_manager.py, tart-all.bat, tart-docker.bat, tart-mongodb.bat
+
+=== ПОСЛЕДНИЕ КОММИТЫ ===
+75d5b015 - 2026-05-05 15:27:23 - feat: Add shared chat functionality between StartIDE and StartOffice (Автор: Itami00001) (v1.0.0)
+
+=== ТЕГИ ВЕРСИЙ ===
+v1.0.0 -> 75d5b015
+
+=== ИЗМЕНЕННЫЕ ФАЙЛЫ ===
+.env, .env.example, DOCKER_SETUP.md, MongoAdmin/__init__.py, README.md, SETUP.md, StartIDE/__init__.py, StartIDE/main.py, StartOffice/__init__.py, StartOffice/main.py и еще 23 файлов

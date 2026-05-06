@@ -1,0 +1,336 @@
+[2026-05-07 00:22:07] INFO: APP_START - StartIDE запущена
+2026-05-07 00:22:07 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 00:22:07] INFO: DB_TEST - Тест логирования
+2026-05-07 00:22:07 - AppLogger - INFO - DB_TEST - Тест логирования
+[2026-05-07 00:23:29] INFO: APP_START - StartIDE запущена
+2026-05-07 00:23:29 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 00:23:35] INFO: APP_START - StartOffice запущена
+2026-05-07 00:23:35 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 00:25:13] INFO: APP_START - StartIDE запущена
+2026-05-07 00:25:13 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 00:25:13] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:25:13 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:25:13] WARNING: WARNING - Голосовой ввод недоступен (требуется установка speechrecognition)
+2026-05-07 00:25:13 - AppLogger - WARNING - WARNING - Голосовой ввод недоступен (требуется установка speechrecognition)
+[2026-05-07 00:25:21] INFO: APP_START - StartOffice запущена
+2026-05-07 00:25:21 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 00:25:21] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:25:21 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:25:21] WARNING: WARNING - Голосовой ввод для документов недоступен (требуется установка speechrecognition)
+2026-05-07 00:25:21 - AppLogger - WARNING - WARNING - Голосовой ввод для документов недоступен (требуется установка speechrecognition)
+[2026-05-07 00:30:12] INFO: APP_START - StartOffice запущена
+2026-05-07 00:30:12 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 00:30:12] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:30:12 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:30:12] WARNING: WARNING - Голосовой ввод для документов недоступен (требуется установка speechrecognition)
+2026-05-07 00:30:12 - AppLogger - WARNING - WARNING - Голосовой ввод для документов недоступен (требуется установка speechrecognition)
+[2026-05-07 00:30:17] INFO: APP_START - StartIDE запущена
+2026-05-07 00:30:17 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 00:30:17] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:30:17 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:30:17] WARNING: WARNING - Голосовой ввод недоступен (требуется установка speechrecognition)
+2026-05-07 00:30:17 - AppLogger - WARNING - WARNING - Голосовой ввод недоступен (требуется установка speechrecognition)
+[2026-05-07 00:31:12] INFO: APP_START - StartIDE запущена
+2026-05-07 00:31:12 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 00:31:12] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:31:12 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:31:12] WARNING: WARNING - Не удалось инициализировать голосовой ввод
+2026-05-07 00:31:12 - AppLogger - WARNING - WARNING - Не удалось инициализировать голосовой ввод
+[2026-05-07 00:31:14] INFO: APP_START - StartOffice запущена
+2026-05-07 00:31:14 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 00:31:14] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:31:14 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:31:14] WARNING: WARNING - Не удалось инициализировать голосовой ввод для документов
+2026-05-07 00:31:14 - AppLogger - WARNING - WARNING - Не удалось инициализировать голосовой ввод для документов
+[2026-05-07 00:31:44] INFO: APP_START - StartIDE запущена
+2026-05-07 00:31:44 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 00:31:44] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:31:44 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:31:44] WARNING: WARNING - Не удалось инициализировать голосовой ввод
+2026-05-07 00:31:44 - AppLogger - WARNING - WARNING - Не удалось инициализировать голосовой ввод
+[2026-05-07 00:34:17] INFO: APP_START - StartOffice запущена
+2026-05-07 00:34:17 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 00:34:17] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:34:17 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:34:17] WARNING: WARNING - Не удалось инициализировать голосовой ввод для документов
+2026-05-07 00:34:17 - AppLogger - WARNING - WARNING - Не удалось инициализировать голосовой ввод для документов
+[2026-05-07 00:34:19] INFO: APP_START - StartIDE запущена
+2026-05-07 00:34:19 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 00:34:19] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:34:19 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:34:19] WARNING: WARNING - Не удалось инициализировать голосовой ввод
+2026-05-07 00:34:19 - AppLogger - WARNING - WARNING - Не удалось инициализировать голосовой ввод
+[2026-05-07 00:42:51] INFO: APP_START - StartIDE запущена
+2026-05-07 00:42:51 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 00:42:51] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:42:51 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:42:53] INFO: APP_START - StartOffice запущена
+2026-05-07 00:42:53 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 00:42:53] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:42:53 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:42:53] INFO: VOICE_INIT - Голосовой ввод инициализирован
+2026-05-07 00:42:53 - AppLogger - INFO - VOICE_INIT - Голосовой ввод инициализирован
+[2026-05-07 00:42:55] INFO: VOICE_INIT - Голосовой ввод для документов инициализирован
+2026-05-07 00:42:55 - AppLogger - INFO - VOICE_INIT - Голосовой ввод для документов инициализирован
+[2026-05-07 00:43:03] INFO: VOICE_START - Начат голосовой ввод вопроса
+2026-05-07 00:43:03 - AppLogger - INFO - VOICE_START - Начат голосовой ввод вопроса
+[2026-05-07 00:43:20] INFO: VOICE_STOP - Распознано: ...
+2026-05-07 00:43:20 - AppLogger - INFO - VOICE_STOP - Распознано: ...
+[2026-05-07 00:43:22] INFO: VOICE_START - Начат голосовой ввод вопроса
+2026-05-07 00:43:22 - AppLogger - INFO - VOICE_START - Начат голосовой ввод вопроса
+[2026-05-07 00:43:41] INFO: VOICE_STOP - Распознано: Hello W...
+2026-05-07 00:43:41 - AppLogger - INFO - VOICE_STOP - Распознано: Hello W...
+[2026-05-07 00:43:47] INFO: VOICE_START - Начат голосовой ввод вопроса
+2026-05-07 00:43:47 - AppLogger - INFO - VOICE_START - Начат голосовой ввод вопроса
+[2026-05-07 00:44:01] INFO: VOICE_STOP - Распознано: хель...
+2026-05-07 00:44:01 - AppLogger - INFO - VOICE_STOP - Распознано: хель...
+[2026-05-07 00:47:06] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/.ai_context.txt
+2026-05-07 00:47:06 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/.ai_context.txt
+[2026-05-07 00:47:17] INFO: VOICE_START - Начат голосовой ввод для документа
+2026-05-07 00:47:17 - AppLogger - INFO - VOICE_START - Начат голосовой ввод для документа
+[2026-05-07 00:47:30] INFO: VOICE_STOP - Распознано для документа: ...
+2026-05-07 00:47:30 - AppLogger - INFO - VOICE_STOP - Распознано для документа: ...
+[2026-05-07 00:47:46] INFO: VOICE_START - Начат голосовой ввод вопроса
+2026-05-07 00:47:46 - AppLogger - INFO - VOICE_START - Начат голосовой ввод вопроса
+[2026-05-07 00:48:01] INFO: VOICE_STOP - Распознано: ...
+2026-05-07 00:48:01 - AppLogger - INFO - VOICE_STOP - Распознано: ...
+[2026-05-07 00:48:01] INFO: VOICE_START - Начат голосовой ввод вопроса
+2026-05-07 00:48:01 - AppLogger - INFO - VOICE_START - Начат голосовой ввод вопроса
+[2026-05-07 00:48:25] INFO: VOICE_STOP - Распознано: ...
+2026-05-07 00:48:25 - AppLogger - INFO - VOICE_STOP - Распознано: ...
+[2026-05-07 00:49:25] INFO: APP_START - StartIDE запущена
+2026-05-07 00:49:25 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 00:49:25] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:49:25 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:49:27] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 00:49:27 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 00:49:29] INFO: APP_START - StartOffice запущена
+2026-05-07 00:49:29 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 00:49:29] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:49:29 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:49:31] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 00:49:31 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 00:49:37] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 00:49:37 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 00:50:10] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: Привет...
+2026-05-07 00:50:10 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: Привет...
+[2026-05-07 00:50:12] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 00:50:12 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 00:50:27] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: Как твои дела...
+2026-05-07 00:50:27 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: Как твои дела...
+[2026-05-07 00:51:04] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+2026-05-07 00:51:04 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+[2026-05-07 00:51:20] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+2026-05-07 00:51:20 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+[2026-05-07 00:52:18] INFO: APP_START - StartOffice запущена
+2026-05-07 00:52:18 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 00:52:18] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:52:18 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:52:20] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 00:52:20 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 00:52:22] INFO: APP_START - StartIDE запущена
+2026-05-07 00:52:22 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 00:52:22] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:52:22 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:52:24] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 00:52:24 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 00:52:30] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 00:52:30 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 00:52:53] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: ...
+2026-05-07 00:52:53 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: ...
+[2026-05-07 00:54:52] INFO: APP_START - StartIDE запущена
+2026-05-07 00:54:52 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 00:54:52] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:54:52 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:54:54] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 00:54:54 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 00:54:54] INFO: APP_START - StartOffice запущена
+2026-05-07 00:54:54 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 00:54:54] INFO: DB_INIT - База данных инициализирована
+2026-05-07 00:54:54 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 00:54:56] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 00:54:56 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 00:54:58] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 00:54:58 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 00:56:03] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: Привет...
+2026-05-07 00:56:03 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: Привет...
+[2026-05-07 00:56:09] INFO: VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+2026-05-07 00:56:09 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+[2026-05-07 00:56:25] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+2026-05-07 00:56:25 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+[2026-05-07 00:56:40] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/.ai_context.txt
+2026-05-07 00:56:40 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/.ai_context.txt
+[2026-05-07 00:56:42] INFO: VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+2026-05-07 00:56:42 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+[2026-05-07 00:57:09] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+2026-05-07 00:57:09 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+[2026-05-07 01:05:57] INFO: APP_START - StartOffice запущена
+2026-05-07 01:05:57 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:05:57] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:05:57 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:05:57] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:05:57 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:05:59] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:05:59 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:06:00] INFO: APP_START - StartIDE запущена
+2026-05-07 01:06:00 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 01:06:00] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:06:00 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:06:00] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:06:00 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:06:03] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 01:06:03 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 01:06:24] INFO: APP_START - StartOffice запущена
+2026-05-07 01:06:24 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:06:24] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:06:24 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:06:24] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:06:24 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:06:26] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:06:26 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:08:32] INFO: APP_START - StartOffice запущена
+2026-05-07 01:08:32 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:08:32] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:08:32 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:08:32] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:08:32 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:08:34] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:08:34 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:10:14] INFO: APP_START - StartOffice запущена
+2026-05-07 01:10:14 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:10:14] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:10:14 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:10:14] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:10:14 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:10:16] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:10:16 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:11:32] INFO: APP_START - StartOffice запущена
+2026-05-07 01:11:32 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:11:32] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:11:32 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:11:32] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:11:32 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:11:34] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:11:34 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:11:39] INFO: APP_START - StartIDE запущена
+2026-05-07 01:11:39 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 01:11:39] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:11:39 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:11:39] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:11:39 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:11:41] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 01:11:41 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 01:11:48] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 01:11:48 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 01:11:53] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: ...
+2026-05-07 01:11:53 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: ...
+[2026-05-07 01:11:54] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 01:11:54 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 01:13:01] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: 1 2 3 Привет...
+2026-05-07 01:13:01 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: 1 2 3 Привет...
+[2026-05-07 01:15:03] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+2026-05-07 01:15:03 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+[2026-05-07 01:15:05] INFO: VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+2026-05-07 01:15:05 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+[2026-05-07 01:15:07] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+2026-05-07 01:15:07 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+[2026-05-07 01:15:08] INFO: VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+2026-05-07 01:15:08 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+[2026-05-07 01:15:25] INFO: FILE_LOAD_CONTEXT - context\projects\project_1\chat_context.txt
+2026-05-07 01:15:25 - AppLogger - INFO - FILE_LOAD_CONTEXT - context\projects\project_1\chat_context.txt
+[2026-05-07 01:15:31] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+2026-05-07 01:15:31 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+[2026-05-07 01:15:36] INFO: FILE_LOAD_CONTEXT - context\projects\project_1\chat_context.txt
+2026-05-07 01:15:36 - AppLogger - INFO - FILE_LOAD_CONTEXT - context\projects\project_1\chat_context.txt
+[2026-05-07 01:15:36] INFO: AI_INTERACTION - Запрос: Создание отчёта... | Статус: ERROR
+2026-05-07 01:15:36 - AppLogger - INFO - AI_INTERACTION - Запрос: Создание отчёта... | Статус: ERROR
+[2026-05-07 01:15:36] ERROR: ERROR - Ошибка создания отчёта: 'OllamaManager' object has no attribute 'ask_question'
+2026-05-07 01:15:36 - AppLogger - ERROR - ERROR - Ошибка создания отчёта: 'OllamaManager' object has no attribute 'ask_question'
+[2026-05-07 01:24:16] INFO: APP_START - StartOffice запущена
+2026-05-07 01:24:16 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:24:16] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:24:16 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:24:16] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:24:16 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:24:18] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:24:18 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:24:36] INFO: VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+2026-05-07 01:24:36 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+[2026-05-07 01:24:42] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+2026-05-07 01:24:42 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+[2026-05-07 01:24:43] INFO: VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+2026-05-07 01:24:43 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
+[2026-05-07 01:24:48] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+2026-05-07 01:24:48 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+[2026-05-07 01:24:54] INFO: FILE_LOAD_CONTEXT_TO_AI - context\projects\project_1\chat_context.txt
+2026-05-07 01:24:54 - AppLogger - INFO - FILE_LOAD_CONTEXT_TO_AI - context\projects\project_1\chat_context.txt
+[2026-05-07 01:25:01] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+2026-05-07 01:25:01 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+[2026-05-07 01:25:06] INFO: FILE_LOAD_CONTEXT_TO_AI - context\projects\project_1\chat_context.txt
+2026-05-07 01:25:06 - AppLogger - INFO - FILE_LOAD_CONTEXT_TO_AI - context\projects\project_1\chat_context.txt
+[2026-05-07 01:25:24] ERROR: ERROR - Ошибка открытия проекта: 'NoneType' object has no attribute 'execute'
+2026-05-07 01:25:24 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: 'NoneType' object has no attribute 'execute'
+[2026-05-07 01:25:43] ERROR: ERROR - Ошибка открытия проекта: 'NoneType' object has no attribute 'execute'
+2026-05-07 01:25:43 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: 'NoneType' object has no attribute 'execute'
+[2026-05-07 01:34:03] INFO: APP_START - StartOffice запущена
+2026-05-07 01:34:03 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:34:03] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:34:03 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:34:03] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:34:03 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:34:05] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:34:05 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:34:07] INFO: APP_START - StartIDE запущена
+2026-05-07 01:34:07 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 01:34:07] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:34:07 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:34:07] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:34:07 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:34:09] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 01:34:09 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 01:34:09] WARNING: WARNING - Голосовой менеджер недоступен
+2026-05-07 01:34:09 - AppLogger - WARNING - WARNING - Голосовой менеджер недоступен
+[2026-05-07 01:35:00] INFO: APP_START - StartOffice запущена
+2026-05-07 01:35:00 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:35:00] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:35:00 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:35:00] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:35:00 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:35:03] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:35:03 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:35:15] INFO: APP_START - StartOffice запущена
+2026-05-07 01:35:15 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:35:15] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:35:15 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:35:15] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:35:15 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:35:17] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:35:17 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:38:07] INFO: APP_START - StartOffice запущена
+2026-05-07 01:38:07 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:38:07] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:38:07 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:38:07] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:38:07 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:38:09] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:38:09 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:38:21] ERROR: ERROR - Ошибка открытия проекта: 'NoneType' object has no attribute 'execute'
+2026-05-07 01:38:21 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: 'NoneType' object has no attribute 'execute'
+[2026-05-07 01:38:25] ERROR: ERROR - Ошибка открытия проекта: 'NoneType' object has no attribute 'execute'
+2026-05-07 01:38:25 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: 'NoneType' object has no attribute 'execute'
+[2026-05-07 01:39:38] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+2026-05-07 01:39:38 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+[2026-05-07 01:39:59] INFO: APP_START - StartIDE запущена
+2026-05-07 01:39:59 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 01:39:59] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:39:59 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:39:59] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:39:59 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:40:01] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 01:40:01 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 01:40:01] WARNING: WARNING - Голосовой менеджер недоступен
+2026-05-07 01:40:01 - AppLogger - WARNING - WARNING - Голосовой менеджер недоступен
+[2026-05-07 01:41:03] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 01:41:03 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 01:41:20] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: Привет...
+2026-05-07 01:41:20 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: Привет...
