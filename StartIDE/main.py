@@ -37,6 +37,23 @@ class StartIDE:
         self.root.title("StartIDE")
         self.root.geometry("1200x800")
 
+        # Цветовая палитра темы
+        self.colors = {
+            "lavender":   "#AB92BF",
+            "plum":       "#655A7C",
+            "cream":      "#FDF1E2",
+            "cream_soft": "#FFF8EF",
+            "ink":        "#25212D",
+            "muted":      "#766E83",
+            "white":      "#FFFFFF",
+            "accent":     "#C9B6D9",
+            "success":    "#4E8B66",
+            "warning":    "#C58B3B",
+            "danger":     "#B85B5B",
+            "panel_bg":   "#2D2640",
+            "panel_fg":   "#EDE8F5",
+        }
+
         # Переменные проекта
         self.project_path = None
         self.ollama_manager = None
@@ -79,8 +96,12 @@ class StartIDE:
         # Попытка подключения к Ollama
         self.init_ollama()
 
+        # Минимальный размер окна
+        self.root.minsize(1100, 700)
+
     def setup_ui(self):
         """Создание интерфейса"""
+        self.apply_theme()
         # Главное меню
         menubar = tk.Menu(self.root)
         self.root.config(menu=menubar)
@@ -104,6 +125,8 @@ class StartIDE:
         project_menu.add_separator()
         project_menu.add_command(label="🔍 Автообнаружение файлов", command=self.auto_discover_files)
         project_menu.add_command(label="📊 Статистика проекта", command=self.show_project_stats)
+        project_menu.add_separator()
+        project_menu.add_command(label="🔬 Анализ стека технологий", command=self.extract_and_save_tech_stack)
 
         # Виджет меню
         view_menu = tk.Menu(menubar, tearoff=0)
@@ -135,8 +158,8 @@ class StartIDE:
         status_frame.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Основной статус
-        self.status_bar = ttk.Label(status_frame, text="Готов к работе", relief=tk.SUNKEN)
-        self.status_bar.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=2, pady=1)
+        self.status_bar = ttk.Label(status_frame, text="Готов к работе", style="Status.TLabel")
+        self.status_bar.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         # Индикатор проекта
         self.project_status_label = ttk.Label(status_frame, text="📁 Нет проекта", foreground="gray")
@@ -154,6 +177,9 @@ class StartIDE:
         self.voice_status_indicator = ttk.Label(status_frame, text="🎤 -", foreground="gray")
         self.voice_status_indicator.pack(side=tk.LEFT, padx=5)
 
+        # Применяем тему после создания всех виджетов
+        self.root.after(50, self.apply_theme)
+
     def setup_file_explorer(self):
         """Настройка проводника файлов с панелью отслеживания"""
         # Создаем вертикальную панель для разделения
@@ -169,7 +195,7 @@ class StartIDE:
         left_paned.add(tracking_frame, weight=1)
 
         # Настройка проводника файлов
-        ttk.Label(file_frame, text="📁 Проводник файлов", font=("Arial", 10, "bold")).pack(pady=5)
+        ttk.Label(file_frame, text="📁 Проводник", font=("Segoe UI", 11, "bold")).pack(pady=6)
 
         self.file_tree = ttk.Treeview(file_frame, columns=("size", "type"), show="tree")
         self.file_tree.heading("#0", text="Файлы")
@@ -184,9 +210,9 @@ class StartIDE:
         file_button_frame = ttk.Frame(file_frame)
         file_button_frame.pack(fill=tk.X, padx=5, pady=5)
 
-        ttk.Button(file_button_frame, text="Создать файл", command=self.create_file).pack(side=tk.LEFT, padx=2)
-        ttk.Button(file_button_frame, text="Создать папку", command=self.create_folder).pack(side=tk.LEFT, padx=2)
-        ttk.Button(file_button_frame, text="Обновить", command=self.refresh_file_tree).pack(side=tk.LEFT, padx=2)
+        ttk.Button(file_button_frame, text="📄 Файл", command=self.create_file, style="Accent.TButton").pack(side=tk.LEFT, padx=2)
+        ttk.Button(file_button_frame, text="📁 Папка", command=self.create_folder).pack(side=tk.LEFT, padx=2)
+        ttk.Button(file_button_frame, text="🔄", command=self.refresh_file_tree).pack(side=tk.LEFT, padx=2)
 
         # Настройка панели отслеживания
         self.setup_tracking_panel(tracking_frame)
@@ -194,7 +220,7 @@ class StartIDE:
     def setup_tracking_panel(self, parent_frame):
         """Настройка панели отслеживания проекта"""
         # Заголовок
-        ttk.Label(parent_frame, text="🔍 Отслеживание проекта", font=("Arial", 10, "bold")).pack(pady=5)
+        ttk.Label(parent_frame, text="🔍 Отслеживание", font=("Segoe UI", 11, "bold")).pack(pady=6)
 
         # Создаем notebook для вкладок
         self.tracking_notebook = ttk.Notebook(parent_frame)
@@ -205,7 +231,7 @@ class StartIDE:
         self.tracking_notebook.add(files_tab, text="📄 Файлы")
 
         # Список отслеживаемых файлов
-        self.tracking_listbox = tk.Listbox(files_tab, font=("Arial", 9))
+        self.tracking_listbox = tk.Listbox(files_tab, font=("Segoe UI", 9), relief=tk.FLAT, borderwidth=0)
         self.tracking_listbox.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Кнопки управления отслеживанием
@@ -221,7 +247,7 @@ class StartIDE:
         self.tracking_notebook.add(stats_tab, text="📊 Статистика")
 
         # Текстовое поле для статистики
-        self.stats_text = scrolledtext.ScrolledText(stats_tab, height=8, font=("Arial", 9))
+        self.stats_text = scrolledtext.ScrolledText(stats_tab, height=8, font=("Segoe UI", 9), relief=tk.FLAT)
         self.stats_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         self.stats_text.config(state=tk.DISABLED)
 
@@ -230,7 +256,7 @@ class StartIDE:
         self.tracking_notebook.add(git_tab, text="🌿 Git")
 
         # Текстовое поле для Git информации
-        self.git_text = scrolledtext.ScrolledText(git_tab, height=8, font=("Arial", 9))
+        self.git_text = scrolledtext.ScrolledText(git_tab, height=8, font=("Segoe UI", 9), relief=tk.FLAT)
         self.git_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         self.git_text.config(state=tk.DISABLED)
 
@@ -291,7 +317,15 @@ class StartIDE:
         text_container = ttk.Frame(self.editor_tab)
         text_container.pack(fill=tk.BOTH, expand=True)
 
-        self.editor_text = tk.Text(text_container, wrap=tk.WORD, font=("Consolas", 10), undo=True)
+        self.editor_text = tk.Text(
+            text_container,
+            wrap=tk.NONE,
+            font=("Consolas", 11),
+            undo=True,
+            relief=tk.FLAT,
+            padx=12, pady=10,
+            tabs="4c",
+        )
         scrollbar_y = ttk.Scrollbar(text_container, orient=tk.VERTICAL, command=self.editor_text.yview)
         scrollbar_x = ttk.Scrollbar(text_container, orient=tk.HORIZONTAL, command=self.editor_text.xview)
 
@@ -311,7 +345,7 @@ class StartIDE:
     def setup_chat_tab(self):
         """Настройка вкладки общего чата"""
         # Заголовок
-        ttk.Label(self.chat_tab, text="💬 Общий чат проекта", font=("Arial", 12, "bold")).pack(pady=10)
+        ttk.Label(self.chat_tab, text="💬 Общий чат проекта", font=("Segoe UI", 13, "bold")).pack(pady=10)
 
         # Кнопки управления чатом
         chat_controls = ttk.Frame(self.chat_tab)
@@ -325,16 +359,18 @@ class StartIDE:
         msg_frame = ttk.LabelFrame(self.chat_tab, text="Сообщение")
         msg_frame.pack(fill=tk.X, padx=10, pady=5)
 
-        self.chat_message = tk.Text(msg_frame, height=3, wrap=tk.WORD)
+        self.chat_message = tk.Text(msg_frame, height=3, wrap=tk.WORD,
+            relief=tk.FLAT, padx=8, pady=6, font=("Segoe UI", 10))
         self.chat_message.pack(fill=tk.X, padx=5, pady=5)
 
-        ttk.Button(msg_frame, text="📨 Отправить сообщение", command=self.send_chat_message).pack(pady=5)
+        ttk.Button(msg_frame, text="📨 Отправить сообщение", command=self.send_chat_message, style="Accent.TButton").pack(pady=5)
 
         # История чата
         chat_history_frame = ttk.LabelFrame(self.chat_tab, text="История чата")
         chat_history_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        self.chat_history = scrolledtext.ScrolledText(chat_history_frame, height=20, wrap=tk.WORD, state=tk.DISABLED)
+        self.chat_history = scrolledtext.ScrolledText(chat_history_frame, height=20, wrap=tk.WORD,
+            state=tk.DISABLED, relief=tk.FLAT, padx=10, pady=8, font=("Segoe UI", 10))
         self.chat_history.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Автообновление чата каждые 5 секунд
@@ -343,7 +379,7 @@ class StartIDE:
     def setup_neuro_panel(self):
         """Настройка панели Нейро"""
         # Заголовок
-        ttk.Label(self.right_frame, text="🧠 Нейро", font=("Arial", 10, "bold")).pack(pady=5)
+        ttk.Label(self.right_frame, text="🧠 Нейро", font=("Segoe UI", 13, "bold")).pack(pady=8)
 
         # Статус подключения
         self.neuro_status_label = ttk.Label(self.right_frame, text="Статус: Не подключено", foreground="red")
@@ -352,14 +388,15 @@ class StartIDE:
         # Чат с нейросетью
         ttk.Label(self.right_frame, text="Вопрос к нейросети:").pack(pady=5)
 
-        self.neuro_question = tk.Text(self.right_frame, height=3, wrap=tk.WORD)
+        self.neuro_question = tk.Text(self.right_frame, height=3, wrap=tk.WORD,
+            relief=tk.FLAT, padx=8, pady=6, font=("Segoe UI", 10))
         self.neuro_question.pack(fill=tk.X, padx=5, pady=2)
 
         # Кнопки для ввода вопроса
         question_buttons_frame = ttk.Frame(self.right_frame)
         question_buttons_frame.pack(fill=tk.X, padx=5, pady=2)
 
-        ttk.Button(question_buttons_frame, text="📝 Отправить вопрос", command=self.ask_neuro).pack(side=tk.LEFT, padx=2)
+        ttk.Button(question_buttons_frame, text="📝 Отправить вопрос", command=self.ask_neuro, style="Accent.TButton").pack(side=tk.LEFT, padx=2)
 
         # Кнопка голосового ввода (улучшенная версия)
         if ADVANCED_VOICE_AVAILABLE:
@@ -378,7 +415,8 @@ class StartIDE:
         # Ответ нейросети
         ttk.Label(self.right_frame, text="Ответ:").pack(pady=5)
 
-        self.neuro_response = tk.Text(self.right_frame, height=15, wrap=tk.WORD, state=tk.DISABLED)
+        self.neuro_response = tk.Text(self.right_frame, height=15, wrap=tk.WORD,
+            state=tk.DISABLED, relief=tk.FLAT, padx=8, pady=6, font=("Segoe UI", 10))
         self.neuro_response.pack(fill=tk.BOTH, expand=True, padx=5, pady=2)
 
         # Кнопка обновления контекста
@@ -396,6 +434,89 @@ class StartIDE:
                 self.logger.error("Не удалось подключиться к Ollama")
 
         threading.Thread(target=check_connection, daemon=True).start()
+
+    def apply_theme(self):
+        """Единая тема StartIDE — светлый редактор, тёмные боковые панели"""
+        c = self.colors
+        self.root.configure(bg=c["cream"])
+
+        style = ttk.Style(self.root)
+        try:
+            style.theme_use("clam")
+        except tk.TclError:
+            pass
+
+        bf  = ("Segoe UI", 10)
+        bfb = ("Segoe UI", 10, "bold")
+        mf  = ("Segoe UI", 11, "bold")
+
+        style.configure(".",                  font=bf,  background=c["cream"],   foreground=c["ink"])
+        style.configure("TFrame",             background=c["cream"])
+        style.configure("Dark.TFrame",        background=c["panel_bg"])
+        style.configure("TLabel",             background=c["cream"],   foreground=c["ink"])
+        style.configure("Dark.TLabel",        background=c["panel_bg"],foreground=c["panel_fg"])
+        style.configure("Muted.TLabel",       background=c["cream"],   foreground=c["muted"])
+        style.configure("Status.TLabel",      background=c["plum"],    foreground=c["cream"],    padding=(8,4))
+        style.configure("TLabelFrame",        background=c["cream"],   foreground=c["plum"],     relief="solid")
+        style.configure("TLabelFrame.Label",  background=c["cream"],   foreground=c["plum"],     font=bfb)
+        style.configure("Dark.TLabelFrame",   background=c["panel_bg"],foreground=c["accent"],   relief="solid")
+        style.configure("Dark.TLabelFrame.Label", background=c["panel_bg"], foreground=c["accent"], font=bfb)
+        style.configure("TNotebook",          background=c["cream"],   borderwidth=0)
+        style.configure("TNotebook.Tab",      background=c["accent"],  foreground=c["ink"],      padding=(12,7), font=bfb)
+        style.map("TNotebook.Tab",
+                  background=[("selected", c["plum"]),  ("active", c["lavender"])],
+                  foreground=[("selected", c["cream"])])
+        style.configure("TButton",            background=c["lavender"],foreground=c["ink"],      padding=(10,6), font=bfb, bordercolor=c["plum"], focusthickness=0)
+        style.map("TButton",
+                  background=[("active", c["accent"]),("pressed", c["plum"]),("disabled","#D7D0DD")],
+                  foreground=[("pressed", c["cream"]),("disabled", c["muted"])])
+        style.configure("Accent.TButton",     background=c["plum"],    foreground=c["cream"],    padding=(10,6))
+        style.map("Accent.TButton",
+                  background=[("active", c["lavender"]),("pressed", c["ink"])])
+        style.configure("TEntry",            fieldbackground=c["white"],foreground=c["ink"],     bordercolor=c["accent"], padding=5)
+        style.configure("Treeview",          background=c["white"],   fieldbackground=c["white"],foreground=c["ink"],     rowheight=24)
+        style.configure("Treeview.Heading",  background=c["plum"],    foreground=c["cream"],    font=bfb)
+        style.map("Treeview",
+                  background=[("selected", c["lavender"])],
+                  foreground=[("selected", c["ink"])])
+        style.configure("TPanedwindow",       background=c["cream"])
+
+        # Tkinter-виджеты (не ttk) — редактор и текстовые поля
+        for widget_name in ("editor_text", "neuro_question", "neuro_response",
+                            "chat_message", "chat_history", "stats_text", "git_text"):
+            w = getattr(self, widget_name, None)
+            if w:
+                if widget_name == "editor_text":
+                    w.configure(bg=c["white"], fg=c["ink"], insertbackground=c["plum"],
+                                selectbackground=c["lavender"], font=("Consolas", 11))
+                elif widget_name in ("neuro_question", "neuro_response"):
+                    w.configure(bg=c["panel_bg"], fg=c["panel_fg"], insertbackground=c["accent"],
+                                selectbackground=c["plum"], font=("Segoe UI", 10))
+                else:
+                    w.configure(bg=c["cream_soft"], fg=c["ink"], insertbackground=c["plum"],
+                                selectbackground=c["lavender"], font=("Segoe UI", 10))
+
+        # Listbox для отслеживания
+        if hasattr(self, "tracking_listbox"):
+            self.tracking_listbox.configure(
+                bg=c["panel_bg"], fg=c["panel_fg"],
+                selectbackground=c["lavender"], selectforeground=c["ink"],
+                relief="flat", borderwidth=0
+            )
+        if hasattr(self, "file_tree"):
+            self.file_tree.configure()
+
+    def _style_text(self, widget, dark=False):
+        """Применить стиль к tk.Text / scrolledtext виджету"""
+        c = self.colors
+        if dark:
+            widget.configure(bg=c["panel_bg"], fg=c["panel_fg"],
+                             insertbackground=c["accent"],
+                             selectbackground=c["plum"], selectforeground=c["cream"])
+        else:
+            widget.configure(bg=c["cream_soft"], fg=c["ink"],
+                             insertbackground=c["plum"],
+                             selectbackground=c["lavender"], selectforeground=c["ink"])
 
     def init_database(self):
         """Инициализация новой системы баз данных"""
@@ -1360,6 +1481,111 @@ class StartIDE:
             if self.app_logger:
                 self.app_logger.log_error(f"Ошибка получения статистики: {e}")
 
+    def extract_and_save_tech_stack(self):
+        """Извлечь технологический стек из проекта и занести в БД"""
+        if not self.current_project_id and self.project_path and self.db_manager:
+            self.current_project_id = self.db_manager.get_or_create_project(str(self.project_path))
+
+        if not self.current_project_id or not self.project_path:
+            messagebox.showwarning("Внимание", "Сначала откройте проект")
+            return
+
+        self.status_bar.config(text="Анализ технологического стека...")
+
+        def _run():
+            try:
+                from shared.tech_stack_detector import TechStackDetector
+                detector = TechStackDetector(str(self.project_path))
+                result = detector.detect_all()
+
+                items_saved = 0
+                # Очищаем старые данные
+                self.db_manager.conn.execute(
+                    "DELETE FROM tech_stack WHERE project_id = ?", (self.current_project_id,)
+                )
+
+                for category, items in result.items():
+                    for item in items:
+                        name = item.get("name", "")
+                        version = item.get("version", "")
+                        confidence = item.get("confidence", 0.8)
+                        if name:
+                            try:
+                                self.db_manager.conn.execute(
+                                    """INSERT INTO tech_stack
+                                       (project_id, technology, version, detected_by, confidence)
+                                       VALUES (?, ?, ?, ?, ?)""",
+                                    (self.current_project_id, name, version, category, confidence)
+                                )
+                                items_saved += 1
+                            except Exception:
+                                pass
+
+                self.db_manager.conn.commit()
+
+                # Обновляем описание проекта
+                tech_summary = ", ".join(
+                    item.get("name", "")
+                    for items in result.values()
+                    for item in items
+                    if item.get("name")
+                )
+                if tech_summary:
+                    try:
+                        self.db_manager.conn.execute(
+                            "UPDATE projects SET description = ? WHERE id = ?",
+                            (f"Стек: {tech_summary[:300]}", self.current_project_id)
+                        )
+                        self.db_manager.conn.commit()
+                    except Exception:
+                        pass
+
+                self.root.after(0, lambda: self.status_bar.config(
+                    text=f"Стек технологий обновлён: {items_saved} записей"
+                ))
+                self.root.after(0, lambda: self._show_tech_stack_result(result))
+
+            except Exception as e:
+                self.logger.error(f"Ошибка анализа стека: {e}")
+                self.root.after(0, lambda: self.status_bar.config(
+                    text=f"Ошибка анализа стека: {e}"
+                ))
+
+        threading.Thread(target=_run, daemon=True).start()
+
+    def _show_tech_stack_result(self, result: dict):
+        """Показать результаты анализа стека"""
+        win = tk.Toplevel(self.root)
+        win.title("Технологический стек проекта")
+        win.geometry("520x460")
+        win.transient(self.root)
+
+        c = self.colors
+        win.configure(bg=c["cream"])
+
+        ttk.Label(win, text="🔬 Технологический стек", font=("Segoe UI", 13, "bold")).pack(pady=10)
+
+        from tkinter import scrolledtext
+        txt = scrolledtext.ScrolledText(win, font=("Segoe UI", 10), wrap=tk.WORD,
+                                        bg=c["cream_soft"], fg=c["ink"], relief=tk.FLAT,
+                                        padx=10, pady=8)
+        txt.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+        for category, items in result.items():
+            if items:
+                txt.insert(tk.END, f"\n{'='*40}\n{category.upper()}\n{'='*40}\n")
+                for item in items:
+                    name = item.get("name", "")
+                    version = item.get("version", "")
+                    conf = int(item.get("confidence", 0) * 100)
+                    ver_str = f" ({version})" if version else ""
+                    txt.insert(tk.END, f"  \u2022 {name}{ver_str}  [{conf}%]\n")
+
+        txt.config(state=tk.DISABLED)
+
+        ttk.Button(win, text="Закрыть", command=win.destroy,
+                   style="Accent.TButton").pack(pady=8)
+
     def open_project_by_path(self, project_path):
         """Открыть проект по пути"""
         try:
@@ -1651,29 +1877,23 @@ class StartIDE:
 
     def setup_hotkeys(self):
         """Настройка горячих клавиш"""
-        # Control + a - выделить весь текст в активном виджете
         self.root.bind('<Control-a>', self.select_all_text)
-
-        # Control + m - использовать микрофон
-        self.root.bind('<Control-m>', self.toggle_microphone_hotkey)
-
-        # Control + y - вернуть текст вперед (redo)
-        self.root.bind('<Control-y>', self.redo_text)
-
-        # Control + z - вернуть текст назад (undo)
+        self.root.bind('<Control-A>', self.select_all_text)
         self.root.bind('<Control-z>', self.undo_text)
-
-        # Control + c - копировать текст
+        self.root.bind('<Control-Z>', self.undo_text)
+        self.root.bind('<Control-y>', self.redo_text)
+        self.root.bind('<Control-Y>', self.redo_text)
         self.root.bind('<Control-c>', self.copy_text)
-
-        # Control + v - вставить текст
+        self.root.bind('<Control-C>', self.copy_text)
         self.root.bind('<Control-v>', self.paste_text)
-
-        # Win + v - выбрать текст из буфера
-        self.root.bind('<Control-v>', self.paste_text)  # Заменяем Win+v на Ctrl+v для совместимости
-
-        # Control + s - сохранить файл
+        self.root.bind('<Control-V>', self.paste_text)
         self.root.bind('<Control-s>', lambda e: self.save_current_file())
+        self.root.bind('<Control-S>', lambda e: self.save_current_file())
+        self.root.bind('<Control-q>', lambda e: self.quit_app())
+        # Win+M / Super+M — микрофон
+        self.root.bind('<super-m>', self.toggle_microphone_hotkey)
+        self.root.bind('<Super-m>', self.toggle_microphone_hotkey)
+        self.root.bind('<Control-m>', self.toggle_microphone_hotkey)  # fallback
 
     def select_all_text(self, event):
         """Выделить весь текст в активном виджете"""
@@ -1688,24 +1908,18 @@ class StartIDE:
             pass
         return None
 
-    def toggle_microphone_hotkey(self, event):
-        """Переключить микрофон по горячей клавише"""
+    def toggle_microphone_hotkey(self, event=None):
+        """Переключить микрофон по горячей клавише (Win+M / Ctrl+M)"""
         try:
-            # Проверяем, какой виджет в фокусе
-            widget = self.root.focus_get()
-            if hasattr(widget, 'get') and widget == getattr(self, 'chat_input', None):
-                # Если в фокусе чат, используем голосовой ввод для чата
-                if ADVANCED_VOICE_AVAILABLE and self.advanced_voice_manager:
-                    self.toggle_voice_input()
-                elif self.voice_manager:
-                    self.toggle_voice_input()
-            elif hasattr(widget, 'get') and widget == getattr(self, 'editor', None):
-                # Если в фокусе редактор кода, можно добавить голосовой ввод для редактора
-                pass  # Можно реализовать позже
-            return "break"
-        except:
-            pass
-        return None
+            if ADVANCED_VOICE_AVAILABLE and hasattr(self, 'voice_button'):
+                self.toggle_advanced_voice_input()
+            elif VOICE_AVAILABLE and hasattr(self, 'voice_button'):
+                self.toggle_voice_input()
+            else:
+                self.status_bar.config(text="Голосовой ввод недоступен (установите speechrecognition)")
+        except Exception as e:
+            self.logger.error(f"Ошибка переключения микрофона: {e}")
+        return "break"
 
     def redo_text(self, event):
         """Вернуть текст вперед (redo)"""
@@ -1729,40 +1943,35 @@ class StartIDE:
             pass
         return None
 
-    def copy_text(self, event):
-        """Копировать текст"""
+    def copy_text(self, event=None):
+        """Копировать выделенный текст"""
         try:
             widget = self.root.focus_get()
-            if hasattr(widget, 'get') and hasattr(widget, 'tag_ranges'):
-                try:
+            if hasattr(widget, 'tag_ranges'):
+                if widget.tag_ranges(tk.SEL):
                     text = widget.get(tk.SEL_FIRST, tk.SEL_LAST)
                     self.root.clipboard_clear()
                     self.root.clipboard_append(text)
-                    return "break"
-                except tk.TclError:
-                    # Если нет выделения, копируем весь текст
-                    text = widget.get("1.0", tk.END)
-                    self.root.clipboard_clear()
-                    self.root.clipboard_append(text)
-                    return "break"
-        except:
+        except Exception:
             pass
-        return None
+        return None  # не прерываем — позволяем tk обработать
 
-    def paste_text(self, event):
-        """Вставить текст"""
+    def paste_text(self, event=None):
+        """Вставить текст из буфера"""
         try:
             widget = self.root.focus_get()
-            if hasattr(widget, 'insert'):
+            if hasattr(widget, 'insert') and hasattr(widget, 'tag_ranges'):
                 try:
                     text = self.root.clipboard_get()
+                    # Удаляем выделенное, если есть
+                    if widget.tag_ranges(tk.SEL):
+                        widget.delete(tk.SEL_FIRST, tk.SEL_LAST)
                     widget.insert(tk.INSERT, text)
-                    return "break"
                 except tk.TclError:
                     pass
-        except:
+        except Exception:
             pass
-        return None
+        return "break"
 
     def run(self):
         """Запуск приложения"""

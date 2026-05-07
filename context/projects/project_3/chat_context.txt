@@ -1,7 +1,134 @@
 === КОНТЕКСТ ЧАТА ===
-Проект: project_3
-Всего сообщений: 2
+Проект: finance-app
+Всего сообщений: 3
+Обновлено: 2026-05-07T04:23:57.536977
 
 === ИСТОРИЯ ДИАЛОГА ===
-[2026-05-06 21:32:22] StartIDE → AI: объясни что происходит в коде
-[2026-05-06 22:48:26] StartIDE → AI: анализируй
+[2026-05-07 01:22:06] StartIDE → AI: [АНАЛИЗ ФАЙЛА] Проанализируй этот файл
+
+Файл: server.js
+```
+require("dotenv").config();
+
+const express = require("express");
+const cors = require("cors");
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+const path = require('path');
+
+const app = express();
+
+var corsOptions = {
+  origin: ["http://localhost:8081", "http://localhost:6868"]
+};
+
+app.use(cors(corsOptions));
+
+// parse requests of content-type - application/json
+app.use(express.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from public directory
+app.use(express.static('public'));
+
+// simple route
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Finance App API',
+      version: '1.0.0',
+      description: 'API for financial accounting with cryptocurrency support',
+    },
+    servers: [
+      {
+        url: 'http://localhost:6868',
+        description: 'Development server',
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        }
+      },
+      schemas: {
+        User: {
+          type: 'object',
+          required: ['username', 'email', 'passwordHash'],
+          properties: {
+            id: {
+              type: 'string',
+              format: 'uuid',
+              description: 'User unique identifier'
+            },
+            username: {
+              type: 'string',
+              example: 'john_doe'
+            },
+            email: {
+              type: 'string',
+              format: 'email',
+              example: 'john@example.com'
+            },
+            passwordHash: {
+              type: 'string',
+              description: 'Hashed password (write-only)'
+            },
+            firstName: {
+              type: 'string',
+              example: 'John'
+            },
+            lastName: {
+              type: 'string',
+              example: 'Doe'
+            },
+            phone: {
+              type: 'string',
+              example: '+1234567890'
+            },
+            isVerified: {
+              type: 'boolean',
+              example: false
+            },
+            isAdmin: {
+              type: 'boolean',
+              example: false
+            },
+            coinBalance: {
+              type: 'number',
+              format: 'decimal',
+              example: 100.50
+            },
+            btcBalance: {
+              type: 'number',
+              format: 'decimal',
+              example: 0.001
+            },
+            usdBalance: {
+              type: 'number',
+              format: 'decimal',
+              example: 1000.00
+            },
+            rubBalance: {
+              type: 'number',
+              format: 'decimal',
+              example: 75000.00
+            },
+            createdAt
+```
+[2026-05-07 01:23:41] StartOffice → AI: Что это
+[2026-05-07 01:23:57] StartIDE → AI: привет
+
+=== СТАТИСТИКА СООБЩЕНИЙ ===
+file_analysis: 1
+text: 2

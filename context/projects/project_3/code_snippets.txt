@@ -1,0 +1,6 @@
+=== ФРАГМЕНТЫ КОДА ===
+Проект: finance-app
+Путь: C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app
+Обновлено: 2026-05-07T04:20:51.564247
+
+Нет отслеживаемых файлов

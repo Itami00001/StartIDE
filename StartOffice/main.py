@@ -35,6 +35,22 @@ class StartOffice:
         self.root = tk.Tk()
         self.root.title("Start Office")
         self.root.geometry("1200x800")
+        self.root.minsize(1050, 680)
+
+        # Палитра интерфейса
+        self.colors = {
+            "lavender": "#AB92BF",
+            "plum": "#655A7C",
+            "cream": "#FDF1E2",
+            "cream_soft": "#FFF8EF",
+            "ink": "#25212D",
+            "muted": "#766E83",
+            "white": "#FFFFFF",
+            "accent": "#C9B6D9",
+            "success": "#4E8B66",
+            "warning": "#C58B3B",
+            "danger": "#B85B5B",
+        }
 
         # Переменные
         self.ollama_manager = None
@@ -76,8 +92,44 @@ class StartOffice:
         # Поиск проектов (после создания UI)
         self.discover_projects()
 
+    def apply_theme(self):
+        """Единая мягкая тема интерфейса Start Office"""
+        colors = self.colors
+        self.root.configure(bg=colors["cream"])
+
+        style = ttk.Style(self.root)
+        try:
+            style.theme_use("clam")
+        except tk.TclError:
+            pass
+
+        base_font = ("Segoe UI", 10)
+        title_font = ("Segoe UI", 11, "bold")
+
+        style.configure(".", font=base_font, background=colors["cream"], foreground=colors["ink"])
+        style.configure("TFrame", background=colors["cream"])
+        style.configure("Card.TFrame", background=colors["cream_soft"], relief="flat")
+        style.configure("TLabel", background=colors["cream"], foreground=colors["ink"])
+        style.configure("Muted.TLabel", background=colors["cream"], foreground=colors["muted"])
+        style.configure("Status.TLabel", background=colors["plum"], foreground=colors["cream"], padding=(8, 4))
+        style.configure("TLabelFrame", background=colors["cream"], foreground=colors["plum"], bordercolor=colors["accent"], relief="solid")
+        style.configure("TLabelFrame.Label", background=colors["cream"], foreground=colors["plum"], font=title_font)
+        style.configure("TNotebook", background=colors["cream"], borderwidth=0)
+        style.configure("TNotebook.Tab", background=colors["accent"], foreground=colors["ink"], padding=(14, 8), font=("Segoe UI", 10, "bold"))
+        style.map("TNotebook.Tab", background=[("selected", colors["plum"]), ("active", colors["lavender"])], foreground=[("selected", colors["cream"])])
+        style.configure("TButton", background=colors["lavender"], foreground=colors["ink"], bordercolor=colors["plum"], focusthickness=0, padding=(10, 6), font=("Segoe UI", 10, "bold"))
+        style.map("TButton", background=[("active", colors["accent"]), ("pressed", colors["plum"]), ("disabled", "#D7D0DD")], foreground=[("pressed", colors["cream"]), ("disabled", colors["muted"])])
+        style.configure("Accent.TButton", background=colors["plum"], foreground=colors["cream"], padding=(12, 7))
+        style.map("Accent.TButton", background=[("active", colors["lavender"]), ("pressed", colors["ink"])] )
+        style.configure("TEntry", fieldbackground=colors["white"], foreground=colors["ink"], bordercolor=colors["accent"], padding=5)
+        style.configure("Treeview", background=colors["white"], fieldbackground=colors["white"], foreground=colors["ink"], rowheight=26, bordercolor=colors["accent"])
+        style.configure("Treeview.Heading", background=colors["plum"], foreground=colors["cream"], font=("Segoe UI", 10, "bold"))
+        style.map("Treeview", background=[("selected", colors["lavender"])], foreground=[("selected", colors["ink"])])
+
     def setup_ui(self):
         """Создание интерфейса"""
+        self.apply_theme()
+
         # Главное меню
         menubar = tk.Menu(self.root)
         self.root.config(menu=menubar)
@@ -104,11 +156,11 @@ class StartOffice:
         main_paned.pack(fill=tk.BOTH, expand=True)
 
         # Левая панель (список проектов)
-        self.left_frame = ttk.Frame(main_paned, width=300)
+        self.left_frame = ttk.Frame(main_paned, width=300, style="Card.TFrame")
         main_paned.add(self.left_frame, weight=1)
 
         # Правая панель (детали проекта и AI ассистент)
-        self.right_frame = ttk.Frame(main_paned)
+        self.right_frame = ttk.Frame(main_paned, style="Card.TFrame")
         main_paned.add(self.right_frame, weight=2)
 
         self.setup_project_list()
@@ -119,8 +171,8 @@ class StartOffice:
         status_frame.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Основной статус
-        self.status_bar = ttk.Label(status_frame, text="Готов к работе", relief=tk.SUNKEN)
-        self.status_bar.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=2, pady=1)
+        self.status_bar = ttk.Label(status_frame, text="Готов к работе", style="Status.TLabel")
+        self.status_bar.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         # Индикатор проекта
         self.project_status_label = ttk.Label(status_frame, text="📁 Нет проекта", foreground="gray")
@@ -141,10 +193,21 @@ class StartOffice:
     def setup_project_list(self):
         """Настройка списка проектов"""
         # Заголовок
-        ttk.Label(self.left_frame, text="📁 Проекты", font=("Arial", 12, "bold")).pack(pady=10)
+        ttk.Label(self.left_frame, text="📁 Проекты", font=("Segoe UI", 13, "bold")).pack(pady=12)
 
         # Список проектов
-        self.project_listbox = tk.Listbox(self.left_frame, font=("Arial", 10))
+        self.project_listbox = tk.Listbox(
+            self.left_frame,
+            font=("Segoe UI", 10),
+            bg=self.colors["cream_soft"],
+            fg=self.colors["ink"],
+            selectbackground=self.colors["lavender"],
+            selectforeground=self.colors["ink"],
+            relief=tk.FLAT,
+            highlightthickness=1,
+            highlightbackground=self.colors["accent"],
+            borderwidth=0,
+        )
         self.project_listbox.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
         self.project_listbox.bind('<<ListboxSelect>>', self.on_project_select)
 
@@ -152,9 +215,9 @@ class StartOffice:
         button_frame = ttk.Frame(self.left_frame)
         button_frame.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Button(button_frame, text="Добавить", command=self.add_project).pack(side=tk.LEFT, padx=2)
-        ttk.Button(button_frame, text="Обновить", command=self.discover_projects).pack(side=tk.LEFT, padx=2)
-        ttk.Button(button_frame, text="Удалить", command=self.remove_project).pack(side=tk.LEFT, padx=2)
+        ttk.Button(button_frame, text="➕ Добавить", command=self.add_project, style="Accent.TButton").pack(side=tk.LEFT, padx=2)
+        ttk.Button(button_frame, text="🔄 Обновить", command=self.discover_projects).pack(side=tk.LEFT, padx=2)
+        ttk.Button(button_frame, text="🗑 Удалить", command=self.remove_project).pack(side=tk.LEFT, padx=2)
 
     def setup_project_details(self):
         """Настройка деталей проекта и AI ассистента"""
@@ -223,19 +286,29 @@ class StartOffice:
 
         # Кнопка обновления Git
         ttk.Button(git_frame, text="🔄 Обновить Git", command=self.update_git_info_display).pack(pady=5)
-        self.project_folders_label.pack(anchor=tk.W, padx=10, pady=2)
 
         # Последние изменения
         history_frame = ttk.LabelFrame(self.overview_frame, text="Последние изменения")
         history_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        self.history_text = scrolledtext.ScrolledText(history_frame, height=15, wrap=tk.WORD, state=tk.DISABLED)
+        self.history_text = scrolledtext.ScrolledText(
+            history_frame,
+            height=15,
+            wrap=tk.WORD,
+            state=tk.DISABLED,
+            bg=self.colors["cream_soft"],
+            fg=self.colors["ink"],
+            relief=tk.FLAT,
+            padx=10,
+            pady=8,
+            font=("Segoe UI", 10),
+        )
         self.history_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
     def setup_ai_assistant_tab(self):
         """Настройка вкладки AI ассистента"""
         # Статус подключения
-        self.ai_status_label = ttk.Label(self.ai_frame, text="Статус: Не подключено", foreground="red")
+        self.ai_status_label = ttk.Label(self.ai_frame, text="Статус: Не подключено", foreground=self.colors["danger"], font=("Segoe UI", 10, "bold"))
         self.ai_status_label.pack(pady=10)
 
         # Выбор поточности данных (куда отправлять/получать от AI)
@@ -276,8 +349,8 @@ class StartOffice:
         file_button_frame = ttk.Frame(file_frame)
         file_button_frame.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Button(file_button_frame, text="Выбрать .txt файл", command=self.select_txt_file).pack(side=tk.LEFT, padx=2)
-        ttk.Button(file_button_frame, text="Обновить", command=self.refresh_txt_file).pack(side=tk.LEFT, padx=2)
+        ttk.Button(file_button_frame, text="📄 Выбрать .txt файл", command=self.select_txt_file, style="Accent.TButton").pack(side=tk.LEFT, padx=2)
+        ttk.Button(file_button_frame, text="🔄 Обновить", command=self.refresh_txt_file).pack(side=tk.LEFT, padx=2)
 
         # Текстовое поле для просмотра содержимого .txt файла
         txt_content_frame = ttk.LabelFrame(self.ai_frame, text="Содержимое .txt файла")
@@ -290,16 +363,23 @@ class StartOffice:
         ttk.Button(button_frame, text="💾 Сохранить изменения", command=self.save_txt_file).pack(side=tk.LEFT, padx=2)
         ttk.Button(button_frame, text="Очистить", command=self.clear_txt_content).pack(side=tk.RIGHT, padx=2)
 
-        self.txt_content = scrolledtext.ScrolledText(txt_content_frame, height=10, wrap=tk.WORD, font=("Consolas", 9))
+        self.txt_content = scrolledtext.ScrolledText(
+            txt_content_frame,
+            height=10,
+            wrap=tk.WORD,
+            font=("Consolas", 10),
+            bg=self.colors["cream_soft"],
+            fg=self.colors["ink"],
+            insertbackground=self.colors["plum"],
+            relief=tk.FLAT,
+            padx=10,
+            pady=8,
+        )
         self.txt_content.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Отслеживание изменений в .txt файле
         self.txt_content.bind('<KeyRelease>', self.on_txt_content_changed)
         self.txt_content.bind('<Button-1>', self.on_txt_content_changed)
-
-        # Переменные для отслеживания изменений
-        self.txt_file_modified = False
-        self.original_txt_content = ""
 
         # Вопрос к AI
         question_frame = ttk.LabelFrame(self.ai_frame, text="Задать вопрос о файле")
@@ -307,16 +387,38 @@ class StartOffice:
 
         ttk.Label(question_frame, text="Вопрос:").pack(anchor=tk.W, padx=10, pady=5)
 
-        self.ai_question = tk.Text(question_frame, height=3, wrap=tk.WORD)
+        self.ai_question = tk.Text(
+            question_frame,
+            height=3,
+            wrap=tk.WORD,
+            bg=self.colors["cream_soft"],
+            fg=self.colors["ink"],
+            insertbackground=self.colors["plum"],
+            relief=tk.FLAT,
+            padx=10,
+            pady=6,
+            font=("Segoe UI", 10),
+        )
         self.ai_question.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Button(question_frame, text="Отправить вопрос", command=self.ask_ai_about_file).pack(pady=10)
+        ttk.Button(question_frame, text="✨ Отправить вопрос", command=self.ask_ai_about_file, style="Accent.TButton").pack(pady=10)
 
         # Ответ AI
         response_frame = ttk.LabelFrame(self.ai_frame, text="Ответ AI")
         response_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        self.ai_response = scrolledtext.ScrolledText(response_frame, height=15, wrap=tk.WORD, state=tk.DISABLED)
+        self.ai_response = scrolledtext.ScrolledText(
+            response_frame,
+            height=15,
+            wrap=tk.WORD,
+            state=tk.DISABLED,
+            bg=self.colors["cream_soft"],
+            fg=self.colors["ink"],
+            relief=tk.FLAT,
+            padx=10,
+            pady=8,
+            font=("Segoe UI", 10),
+        )
         self.ai_response.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Кнопка обновления контекста
@@ -335,7 +437,7 @@ class StartOffice:
     def setup_chat_tab(self):
         """Настройка вкладки общего чата"""
         # Заголовок
-        ttk.Label(self.chat_frame, text="💬 Общий чат проекта", font=("Arial", 12, "bold")).pack(pady=10)
+        ttk.Label(self.chat_frame, text="💬 Общий чат проекта", font=("Segoe UI", 13, "bold")).pack(pady=10)
 
         # Кнопки управления чатом
         chat_controls = ttk.Frame(self.chat_frame)
@@ -349,16 +451,38 @@ class StartOffice:
         msg_frame = ttk.LabelFrame(self.chat_frame, text="Сообщение")
         msg_frame.pack(fill=tk.X, padx=10, pady=5)
 
-        self.chat_message = tk.Text(msg_frame, height=3, wrap=tk.WORD)
+        self.chat_message = tk.Text(
+            msg_frame,
+            height=3,
+            wrap=tk.WORD,
+            bg=self.colors["cream_soft"],
+            fg=self.colors["ink"],
+            insertbackground=self.colors["plum"],
+            relief=tk.FLAT,
+            padx=10,
+            pady=6,
+            font=("Segoe UI", 10),
+        )
         self.chat_message.pack(fill=tk.X, padx=5, pady=5)
 
-        ttk.Button(msg_frame, text="📨 Отправить сообщение", command=self.send_chat_message).pack(pady=5)
+        ttk.Button(msg_frame, text="📨 Отправить сообщение", command=self.send_chat_message, style="Accent.TButton").pack(pady=5)
 
         # История чата
         chat_history_frame = ttk.LabelFrame(self.chat_frame, text="История чата")
         chat_history_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        self.chat_history = scrolledtext.ScrolledText(chat_history_frame, height=20, wrap=tk.WORD, state=tk.DISABLED)
+        self.chat_history = scrolledtext.ScrolledText(
+            chat_history_frame,
+            height=20,
+            wrap=tk.WORD,
+            state=tk.DISABLED,
+            bg=self.colors["cream_soft"],
+            fg=self.colors["ink"],
+            relief=tk.FLAT,
+            padx=10,
+            pady=8,
+            font=("Segoe UI", 10),
+        )
         self.chat_history.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Автообновление чата
@@ -955,7 +1079,7 @@ class StartOffice:
     def load_txt_file(self, file_path):
         """Загрузка .txt файла"""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, 'r', encoding='utf-8', errors='replace') as f:
                 content = f.read()
 
             self.current_txt_file = Path(file_path)
@@ -964,7 +1088,12 @@ class StartOffice:
             self.txt_file_modified = False
 
             # Обновляем интерфейс
-            self.txt_file_label.config(text=f"📄 {self.current_txt_file.name}", foreground="black")
+            self.txt_file_label.config(text=f"📄 {self.current_txt_file.name}", foreground=self.colors["ink"])
+            if hasattr(self, 'context_file_label'):
+                self.context_file_label.config(
+                    text=f"context.txt: используется выбранный файл — {self.current_txt_file.name}",
+                    foreground=self.colors["plum"],
+                )
 
             # Отображаем содержимое
             self.txt_content.delete(1.0, tk.END)
@@ -988,7 +1117,7 @@ class StartOffice:
             current_content = self.txt_content.get(1.0, tk.END).strip()
             if current_content != self.original_txt_content.strip():
                 self.txt_file_modified = True
-                self.txt_file_label.config(text=f"📄 {self.current_txt_file.name} *", foreground="red")
+                self.txt_file_label.config(text=f"📄 {self.current_txt_file.name} *", foreground=self.colors["danger"])
                 self.status_bar.config(text=f"Файл изменен: {self.current_txt_file.name}")
 
     def save_txt_file(self):
@@ -1008,7 +1137,12 @@ class StartOffice:
             self.txt_file_modified = False
 
             # Обновляем интерфейс
-            self.txt_file_label.config(text=f"📄 {self.current_txt_file.name}", foreground="black")
+            self.txt_file_label.config(text=f"📄 {self.current_txt_file.name}", foreground=self.colors["ink"])
+            if hasattr(self, 'context_file_label'):
+                self.context_file_label.config(
+                    text=f"context.txt: используется выбранный файл — {self.current_txt_file.name}",
+                    foreground=self.colors["plum"],
+                )
             self.status_bar.config(text=f"Файл сохранен: {self.current_txt_file.name}")
 
         except Exception as e:
@@ -1017,7 +1151,12 @@ class StartOffice:
     def clear_txt_content(self):
         """Очистка содержимого .txt файла"""
         self.txt_content.delete(1.0, tk.END)
-        self.txt_file_label.config(text="Файл не выбран", foreground="gray")
+        self.txt_file_label.config(text="Файл не выбран", foreground=self.colors["muted"])
+        if hasattr(self, 'context_file_label'):
+            self.context_file_label.config(
+                text="context.txt: будет использован выбранный .txt файл из вкладки AI Ассистент",
+                foreground=self.colors["muted"],
+            )
         self.current_txt_file = None
         self.txt_file_content = ""
         self.original_txt_content = ""
@@ -1076,35 +1215,31 @@ class StartOffice:
                 messagebox.showwarning("Внимание", "Выберите проект или .txt файл")
             return
 
-        # Если файл выбран - задаем вопрос о файле
+        # Если файл выбран - задаем вопрос о файле.
+        # Берём текст из редактора, чтобы AI видел актуальные несохранённые изменения.
         def get_response():
-            # Формируем контекст с содержимым файла
-            context = f"Содержимое файла {self.current_txt_file.name}:\n\n{self.txt_file_content}\n\nВопрос: {question}"
+            try:
+                actual_content = self.txt_content.get(1.0, tk.END).strip() or self.txt_file_content
+                prompt = f"Содержимое файла {self.current_txt_file.name}:\n\n{actual_content}\n\nВопрос: {question}"
+                ai_response = self.ollama_manager.ask_question(prompt) or "AI не вернул ответ"
 
-            response = self.ollama_manager.session.post(f"{self.ollama_manager.base_url}/api/generate",
-                json={
-                    "model": self.ollama_manager.model,
-                    "prompt": context,
-                    "stream": False
-                }
-            )
+                mode_prefix = "[РЕЖИМ: IDE + Office]\n\n" if flow_mode == "both" else "[РЕЖИМ: Только Office]\n\n"
 
-            if response.status_code == 200:
-                ai_response = response.json().get('response', 'Нет ответа')
-            else:
-                ai_response = f"Ошибка: {response.status_code}"
+                def update_ui():
+                    self.ai_response.config(state=tk.NORMAL)
+                    self.ai_response.delete(1.0, tk.END)
+                    self.ai_response.insert(1.0, f"{mode_prefix}Вопрос о файле {self.current_txt_file.name}:\n{question}\n\nОтвет:\n{ai_response}")
+                    self.ai_response.config(state=tk.DISABLED)
 
-            mode_prefix = "[РЕЖИМ: IDE + Office]\n\n" if flow_mode == "both" else "[РЕЖИМ: Только Office]\n\n"
+                    if flow_mode == "both":
+                        self.status_bar.config(text=f"Ответ о файле {self.current_txt_file.name} получен в Office и доступен в IDE")
+                    else:
+                        self.status_bar.config(text=f"Ответ о файле {self.current_txt_file.name} получен в Office")
 
-            self.ai_response.config(state=tk.NORMAL)
-            self.ai_response.delete(1.0, tk.END)
-            self.ai_response.insert(1.0, f"{mode_prefix}Вопрос о файле {self.current_txt_file.name}:\n{question}\n\nОтвет:\n{ai_response}")
-            self.ai_response.config(state=tk.DISABLED)
-
-            if flow_mode == "both":
-                self.status_bar.config(text=f"Ответ о файле {self.current_txt_file.name} получен в Office и доступен в IDE")
-            else:
-                self.status_bar.config(text=f"Ответ о файле {self.current_txt_file.name} получен в Office")
+                self.root.after(0, update_ui)
+            except Exception as e:
+                self.logger.error(f"Ошибка AI-анализа txt файла: {e}")
+                self.root.after(0, lambda: self.status_bar.config(text="Ошибка AI-анализа файла"))
 
         threading.Thread(target=get_response, daemon=True).start()
 
@@ -1344,7 +1479,17 @@ class StartOffice:
         text_container = ttk.Frame(editor_frame)
         text_container.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        self.document_editor = tk.Text(text_container, wrap=tk.WORD, font=("Consolas", 11))
+        self.document_editor = tk.Text(
+            text_container,
+            wrap=tk.WORD,
+            font=("Consolas", 11),
+            bg=self.colors["cream_soft"],
+            fg=self.colors["ink"],
+            insertbackground=self.colors["plum"],
+            relief=tk.FLAT,
+            padx=12,
+            pady=10,
+        )
         doc_scrollbar_y = ttk.Scrollbar(text_container, orient=tk.VERTICAL, command=self.document_editor.yview)
         doc_scrollbar_x = ttk.Scrollbar(text_container, orient=tk.HORIZONTAL, command=self.document_editor.xview)
 
@@ -1365,11 +1510,18 @@ class StartOffice:
         ai_buttons_frame = ttk.Frame(ai_assistant_frame)
         ai_buttons_frame.pack(fill=tk.X, padx=5, pady=5)
 
-        ttk.Button(ai_buttons_frame, text="📄 Загрузить context.txt", command=self.load_context_to_ai).pack(side=tk.LEFT, padx=2)
+        self.context_file_label = ttk.Label(
+            ai_assistant_frame,
+            text="context.txt: будет использован выбранный .txt файл из вкладки AI Ассистент",
+            foreground=self.colors["muted"],
+        )
+        self.context_file_label.pack(anchor=tk.W, padx=8, pady=(2, 4))
+
+        ttk.Button(ai_buttons_frame, text="📄 Загрузить context.txt", command=self.load_context_to_ai, style="Accent.TButton").pack(side=tk.LEFT, padx=2)
         ttk.Button(ai_buttons_frame, text="🤖 Создать отчёт", command=self.generate_report_with_ai).pack(side=tk.LEFT, padx=2)
 
         # Статус AI
-        self.ai_doc_status = ttk.Label(ai_assistant_frame, text="Готов к работе", foreground="green")
+        self.ai_doc_status = ttk.Label(ai_assistant_frame, text="Готов к работе", foreground=self.colors["success"])
         self.ai_doc_status.pack(pady=2)
 
         # Переменные для документа
@@ -1535,62 +1687,82 @@ class StartOffice:
             self.status_bar.config(text="Готов к работе")
 
     def load_context_to_ai(self):
-        """Загрузка context.txt в нейросеть для анализа"""
+        """Загрузка выбранного .txt/context.txt в нейросеть для анализа"""
         try:
-            # Ищем context.txt в папке проекта
-            context_file = None
-            if self.current_project_id and self.db_manager:
-                project_info = self.db_manager.get_project_by_id(self.current_project_id)
-                if project_info:
-                    project_path = Path(project_info['path'])
-                    context_file = project_path / "context.txt"
-
-            # Используем контекст из базы данных вместо файла
-            if not self.current_project_id:
-                messagebox.showwarning("Внимание", "Проект не выбран")
-                return
-
-            # Получаем контекст из базы данных
-            context_content = self.get_project_context_from_db()
-
-            if not context_content:
-                messagebox.showwarning("Внимание", "Контекст проекта не найден")
-                return
-
             if not self.ollama_manager:
                 messagebox.showwarning("AI недоступен", "Подключение к AI не установлено")
                 return
 
-            # Отправляем контекст в нейросеть для анализа
-            self.ai_doc_status.config(text="Отправляю контекст в AI...", foreground="orange")
+            source_name = "контекст проекта из базы"
+            context_content = ""
+
+            # Приоритет 1: выбранный .txt из вкладки AI Ассистент.
+            # Берём текст прямо из редактора, чтобы учитывать несохранённые изменения.
+            if getattr(self, 'current_txt_file', None):
+                context_content = self.txt_content.get(1.0, tk.END).strip()
+                source_name = self.current_txt_file.name
+            else:
+                # Приоритет 2: context.txt в папке проекта.
+                context_file = None
+                if self.current_project_id and self.db_manager:
+                    project_info = self.db_manager.get_project_by_id(self.current_project_id)
+                    if project_info:
+                        context_file = Path(project_info['path']) / "context.txt"
+
+                if context_file and context_file.exists():
+                    with open(context_file, 'r', encoding='utf-8', errors='replace') as f:
+                        context_content = f.read().strip()
+                    source_name = context_file.name
+                elif self.current_project_id:
+                    # Приоритет 3: собранный контекст из БД.
+                    context_content = self.get_project_context_from_db()
+                else:
+                    messagebox.showwarning("Внимание", "Выберите проект или .txt файл во вкладке AI Ассистент")
+                    return
+
+            if not context_content:
+                messagebox.showwarning("Внимание", "Контекст пуст или не найден")
+                return
+
+            # Показываем/синхронизируем выбранный контекст в документном редакторе.
+            if hasattr(self, 'document_editor'):
+                self.document_editor.delete(1.0, tk.END)
+                self.document_editor.insert(1.0, context_content)
+                self.document_modified = False
+
+            if hasattr(self, 'context_file_label'):
+                self.context_file_label.config(
+                    text=f"context.txt: загружен источник — {source_name}",
+                    foreground=self.colors["plum"],
+                )
+
+            self.ai_doc_status.config(text="Отправляю контекст в AI...", foreground=self.colors["warning"])
 
             def send_context():
                 try:
-                    # Отправляем запрос в AI для анализа контекста
-                    prompt = f"Проанализируй следующий контекст проекта и предоставь краткую информацию:\n\n{context_content}"
+                    prompt = (
+                        "Проанализируй следующий context.txt / текстовый контекст проекта. "
+                        "Дай краткую сводку, найденные задачи, риски и рекомендации.\n\n"
+                        f"Источник: {source_name}\n\n{context_content}"
+                    )
 
-                    response = self.ollama_manager.ask_question(prompt)
+                    response = self.ollama_manager.ask_question(prompt) or "AI не вернул ответ"
 
-                    # Показываем результат в отдельном окне
-                    self.root.after(0, lambda: self.show_ai_response("Анализ контекста", response))
-
-                    # Обновляем статус
-                    self.root.after(0, lambda: self.ai_doc_status.config(text="Контекст проанализирован", foreground="green"))
-                    self.root.after(0, lambda: self.status_bar.config(text="Контекст отправлен в AI"))
+                    self.root.after(0, lambda: self.show_ai_response("Анализ context.txt", response))
+                    self.root.after(0, lambda: self.ai_doc_status.config(text="Контекст проанализирован", foreground=self.colors["success"]))
+                    self.root.after(0, lambda: self.status_bar.config(text=f"Контекст '{source_name}' отправлен в AI"))
 
                     if self.app_logger:
-                        self.app_logger.log_ai_interaction("Анализ контекста", True)
+                        self.app_logger.log_ai_interaction(f"Анализ context.txt: {source_name}", True)
 
                 except Exception as e:
-                    self.root.after(0, lambda: self.ai_doc_status.config(text="Ошибка анализа", foreground="red"))
-                    self.root.after(0, lambda: self.status_bar.config(text="Ошибка анализа контекста"))
+                    self.root.after(0, lambda: self.ai_doc_status.config(text="Ошибка анализа", foreground=self.colors["danger"]))
+                    self.root.after(0, lambda: self.status_bar.config(text="Ошибка анализа context.txt"))
 
                     if self.app_logger:
-                        self.app_logger.log_ai_interaction("Анализ контекста", False)
-                    if self.app_logger:
-                        self.app_logger.log_error(f"Ошибка анализа контекста: {e}")
+                        self.app_logger.log_ai_interaction("Анализ context.txt", False)
+                        self.app_logger.log_error(f"Ошибка анализа context.txt: {e}")
 
-            # Запускаем в отдельном потоке
             threading.Thread(target=send_context, daemon=True).start()
 
         except Exception as e:
