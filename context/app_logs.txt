@@ -692,3 +692,47 @@
 2026-05-07 04:25:15 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод для документа (реальное время)
 [2026-05-07 04:25:33] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
 2026-05-07 04:25:33 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод для документа: ...
+[2026-05-07 04:30:45] INFO: FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt
+2026-05-07 04:30:45 - AppLogger - INFO - FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt
+[2026-05-07 04:48:53] INFO: APP_START - StartOffice запущена
+2026-05-07 04:48:53 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 04:48:53] INFO: DB_INIT - База данных инициализирована
+2026-05-07 04:48:53 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 04:48:53] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 04:48:53 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 04:48:55] INFO: APP_START - StartIDE запущена
+2026-05-07 04:48:55 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 04:48:55] INFO: DB_INIT - База данных инициализирована
+2026-05-07 04:48:55 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 04:48:55] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 04:48:55 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 04:48:55] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 04:48:55 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 04:48:57] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 04:48:57 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 04:48:58] INFO: VOICE_INIT - Голосовой менеджер инициализирован
+2026-05-07 04:48:58 - AppLogger - INFO - VOICE_INIT - Голосовой менеджер инициализирован
+[2026-05-07 04:49:38] INFO: UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+2026-05-07 04:49:38 - AppLogger - INFO - UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+[2026-05-07 04:49:48] INFO: PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+2026-05-07 04:49:48 - AppLogger - INFO - PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+[2026-05-07 04:50:22] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 04:50:22 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 04:50:23] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: ...
+2026-05-07 04:50:23 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: ...
+[2026-05-07 04:50:25] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 04:50:25 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 04:50:38] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: Привет Я хочу узнать...
+2026-05-07 04:50:38 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: Привет Я хочу узнать...
+[2026-05-07 04:51:09] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+2026-05-07 04:51:09 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+[2026-05-07 04:51:11] INFO: VOICE_START - Голосовой ввод документа запущен
+2026-05-07 04:51:11 - AppLogger - INFO - VOICE_START - Голосовой ввод документа запущен
+[2026-05-07 04:51:15] INFO: VOICE_STOP - Голосовой ввод остановлен: 
+2026-05-07 04:51:15 - AppLogger - INFO - VOICE_STOP - Голосовой ввод остановлен: 
+[2026-05-07 04:51:16] INFO: VOICE_START - Голосовой ввод документа запущен
+2026-05-07 04:51:16 - AppLogger - INFO - VOICE_START - Голосовой ввод документа запущен
+[2026-05-07 04:51:27] INFO: VOICE_STOP - Голосовой ввод остановлен: Я бы с Надо идти спать
+2026-05-07 04:51:27 - AppLogger - INFO - VOICE_STOP - Голосовой ввод остановлен: Я бы с Надо идти спать
+[2026-05-07 04:51:31] INFO: FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt
+2026-05-07 04:51:31 - AppLogger - INFO - FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt

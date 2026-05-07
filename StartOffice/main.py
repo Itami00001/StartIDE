@@ -504,17 +504,34 @@ class StartOffice:
     def init_ollama(self):
         """Инициализация подключения к Ollama"""
         def check_connection():
-            self.ollama_manager = OllamaManager()
-            if self.ollama_manager.test_connection():
-                # Обновляем статус если UI уже создан
-                if hasattr(self, 'ai_status_label'):
-                    self.ai_status_label.config(text="Статус: Подключено", foreground="green")
-                self.logger.info("Подключение к Ollama установлено")
-            else:
-                # Обновляем статус если UI уже создан
-                if hasattr(self, 'ai_status_label'):
-                    self.ai_status_label.config(text="Статус: Ошибка подключения", foreground="red")
-                self.logger.error("Не удалось подключиться к Ollama")
+            try:
+                self.ollama_manager = OllamaManager()
+                connected = self.ollama_manager.test_connection()
+
+                def _update_ui():
+                    if connected:
+                        c = getattr(self, 'colors', {})
+                        if hasattr(self, 'ai_status_label'):
+                            self.ai_status_label.config(
+                                text="Статус: Подключено ✅",
+                                foreground=c.get("success", "#4E8B66")
+                            )
+                        if hasattr(self, 'ai_status_indicator'):
+                            self.ai_status_indicator.config(text="🤖 OK", foreground=c.get("success", "#4E8B66"))
+                        self.logger.info("Подключение к Ollama установлено")
+                    else:
+                        c = getattr(self, 'colors', {})
+                        if hasattr(self, 'ai_status_label'):
+                            self.ai_status_label.config(
+                                text="Статус: Ollama не запущена ⚠",
+                                foreground=c.get("warning", "#C58B3B")
+                            )
+                        self.logger.error("Не удалось подключиться к Ollama")
+
+                # Обновляем UI строго из главного потока
+                self.root.after(0, _update_ui)
+            except Exception as e:
+                self.logger.error(f"Ошибка init_ollama: {e}")
 
         threading.Thread(target=check_connection, daemon=True).start()
 
@@ -1603,55 +1620,101 @@ class StartOffice:
                 self.status_bar.config(text=f"Документ изменен: {self.current_document_path.name}*")
 
     def toggle_advanced_document_voice_input(self):
-        """Переключение улучшенного голосового ввода для документа с реальным временем"""
+        """Переключение голосового ввода для документа с безопасным обновлением UI"""
         if not ADVANCED_VOICE_INPUT_AVAILABLE or not self.advanced_voice_input_manager:
-            messagebox.showwarning("Голосовой ввод", "Улучшенный голосовой ввод недоступен. Установите speechrecognition.")
+            messagebox.showwarning(
+                "Голосовой ввод",
+                "Голосовой ввод недоступен.\nУстановите: pip install speechrecognition pyaudio"
+            )
             return
 
         if not self.is_recording_document_voice:
-            # Начинаем непрерывную запись для документа
+            # ── НАЧИНАЕМ ЗАПИСЬ ──────────────────────────────────
             self.voice_doc_button.config(text="⏹️ Остановить запись")
             self.is_recording_document_voice = True
 
-            # Настраиваем для документов
             self.advanced_voice_input_manager.set_language("ru-RU")
-            self.advanced_voice_input_manager.set_sensitivity(0.8)  # Более чувствительный для документов
+            self.advanced_voice_input_manager.set_sensitivity(0.85)
 
-            # Устанавливаем callback для частичного распознавания
+            # partial_callback — вызывается из потока, используем root.after для безопасной вставки
             def partial_callback(text):
-                # Показываем распознаваемое слово в статусе
-                if hasattr(self, 'voice_doc_status'):
-                    self.voice_doc_status.config(text=f"🗣️: {text}")
+                if not text.strip():
+                    return
 
-            # Устанавливаем callback для финального текста
+                def _insert():
+                    try:
+                        if not self.is_recording_document_voice:
+                            return
+                        # Показываем текущее слово в статусе
+                        if hasattr(self, 'voice_doc_status'):
+                            self.voice_doc_status.config(text=f"🗣 {text[:30]}")
+
+                        # Вставляем текст в редактор
+                        editor = self.document_editor
+                        # Смотрим последние символы — если нет пробела, добавляем
+                        try:
+                            end_pos = editor.index("end-1c")
+                            last_chars = editor.get(f"{end_pos}-2c", end_pos) if editor.get("1.0", "end-1c") else ""
+                        except Exception:
+                            last_chars = ""
+
+                        if last_chars and last_chars[-1] not in (' ', '\n'):
+                            editor.insert(tk.END, " " + text.strip())
+                        else:
+                            editor.insert(tk.END, text.strip())
+
+                        editor.see(tk.END)
+                    except Exception as e:
+                        self.logger.debug(f"voice insert error: {e}")
+
+                self.root.after(0, _insert)
+
             def final_callback(text):
                 if text.strip():
-                    if hasattr(self, 'voice_doc_status'):
-                        self.voice_doc_status.config(text=f"✅: {text[:20]}...")
+                    def _finalize():
+                        try:
+                            if hasattr(self, 'voice_doc_status'):
+                                self.voice_doc_status.config(text=f"✅ {text[:25]}")
+                            # Финальный текст — добавляем с пробелом и точкой если нужно
+                            editor = self.document_editor
+                            current = editor.get("1.0", "end-1c")
+                            if current and not current.endswith(('.', '!', '?', '\n')):
+                                editor.insert(tk.END, " " + text.strip())
+                            else:
+                                editor.insert(tk.END, text.strip())
+                            editor.see(tk.END)
+                        except Exception as e:
+                            self.logger.debug(f"voice final insert error: {e}")
+                    self.root.after(0, _finalize)
 
             self.advanced_voice_input_manager.set_partial_text_callback(partial_callback)
             self.advanced_voice_input_manager.set_text_callback(final_callback)
 
-            # Начинаем непрерывную запись
-            self.advanced_voice_input_manager.start_continuous_document_recording(self.document_editor)
+            # Запускаем запись (передаём None — вставку делаем сами через root.after)
+            success = self.advanced_voice_input_manager.start_continuous_document_recording(None)
+
+            if not success:
+                self.voice_doc_button.config(text="🎤 Голос (реальное время)")
+                self.is_recording_document_voice = False
+                messagebox.showwarning("Голосовой ввод", "Не удалось открыть микрофон")
+                return
 
             if self.app_logger:
-                self.app_logger.log_voice_action("start", "Начат улучшенный голосовой ввод для документа (реальное время)")
+                self.app_logger.log_voice_action("start", "Голосовой ввод документа запущен")
+            self.status_bar.config(text="🎤 Говорите — текст появляется в редакторе...")
 
-            self.status_bar.config(text="🎤 Голосовой ввод в документ (реальное время)...")
         else:
-            # Останавливаем запись
+            # ── ОСТАНАВЛИВАЕМ ЗАПИСЬ ─────────────────────────────────
             self.voice_doc_button.config(text="🎤 Голос (реальное время)")
             self.is_recording_document_voice = False
 
             final_text = self.advanced_voice_input_manager.stop_document_recording()
 
-            # Обновляем статус
             if hasattr(self, 'voice_doc_status'):
-                self.voice_doc_status.config(text="✅ Готово")
+                self.voice_doc_status.config(text="")
 
             if self.app_logger:
-                self.app_logger.log_voice_action("stop", f"Завершен улучшенный голосовой ввод для документа: {final_text[:50]}...")
+                self.app_logger.log_voice_action("stop", f"Голосовой ввод остановлен: {final_text[:40]}")
 
             self.status_bar.config(text="Готов к работе")
 

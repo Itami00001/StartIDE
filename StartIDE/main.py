@@ -82,16 +82,14 @@ class StartIDE:
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
 
-        # Привязка горячих клавиш
-        self.root.bind('<Control-s>', lambda e: self.save_current_file())
-        self.root.bind('<Control-S>', lambda e: self.save_current_file())
-        self.root.bind('<Control-q>', lambda e: self.quit_app())
-
         # Инициализация новой системы баз данных
         self.init_database()
 
         # Создание интерфейса
         self.setup_ui()
+
+        # Горячие клавиши — после создания всех виджетов
+        self.setup_hotkeys()
 
         # Попытка подключения к Ollama
         self.init_ollama()
@@ -308,6 +306,9 @@ class StartIDE:
         self.send_file_button = ttk.Button(toolbar_frame, text="📤 Отправить файл", command=self.send_current_file_to_chat)
         self.send_file_button.pack(side=tk.LEFT, padx=2)
 
+        ttk.Button(toolbar_frame, text="📊 Отчёт по файлам", command=self.generate_report_from_files,
+                   style="Accent.TButton").pack(side=tk.LEFT, padx=2)
+
         ttk.Separator(toolbar_frame, orient=tk.VERTICAL).pack(side=tk.LEFT, fill=tk.Y, padx=5)
 
         self.file_path_label = ttk.Label(toolbar_frame, text="Файл не открыт", foreground="gray")
@@ -341,6 +342,12 @@ class StartIDE:
         # Отслеживание изменений
         self.editor_text.bind('<KeyRelease>', self.on_text_changed)
         self.editor_text.bind('<Button-1>', self.on_text_changed)
+        # Ctrl+A — выделить всё (переопределяем класс-биндинг Text)
+        self.editor_text.bind('<Control-a>', lambda e: self._select_all_in(self.editor_text))
+        self.editor_text.bind('<Control-A>', lambda e: self._select_all_in(self.editor_text))
+        # Ctrl+Y — redo (в Text нет нативного, добавляем)
+        self.editor_text.bind('<Control-y>', lambda e: self._redo_in(self.editor_text))
+        self.editor_text.bind('<Control-Y>', lambda e: self._redo_in(self.editor_text))
 
     def setup_chat_tab(self):
         """Настройка вкладки общего чата"""
@@ -362,6 +369,9 @@ class StartIDE:
         self.chat_message = tk.Text(msg_frame, height=3, wrap=tk.WORD,
             relief=tk.FLAT, padx=8, pady=6, font=("Segoe UI", 10))
         self.chat_message.pack(fill=tk.X, padx=5, pady=5)
+        self.chat_message.bind('<Control-a>', lambda e: self._select_all_in(self.chat_message))
+        self.chat_message.bind('<Control-A>', lambda e: self._select_all_in(self.chat_message))
+        self.chat_message.bind('<Return>', lambda e: (self.send_chat_message(), "break")[1])
 
         ttk.Button(msg_frame, text="📨 Отправить сообщение", command=self.send_chat_message, style="Accent.TButton").pack(pady=5)
 
@@ -391,6 +401,9 @@ class StartIDE:
         self.neuro_question = tk.Text(self.right_frame, height=3, wrap=tk.WORD,
             relief=tk.FLAT, padx=8, pady=6, font=("Segoe UI", 10))
         self.neuro_question.pack(fill=tk.X, padx=5, pady=2)
+        self.neuro_question.bind('<Control-a>', lambda e: self._select_all_in(self.neuro_question))
+        self.neuro_question.bind('<Control-A>', lambda e: self._select_all_in(self.neuro_question))
+        self.neuro_question.bind('<Return>', lambda e: (self.ask_neuro(), "break")[1])
 
         # Кнопки для ввода вопроса
         question_buttons_frame = ttk.Frame(self.right_frame)
@@ -1172,6 +1185,194 @@ class StartIDE:
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось отправить файл: {e}")
 
+    def generate_report_from_files(self):
+        """Выбрать до 2 файлов проекта и сгенерировать подробный AI-отчёт"""
+        if not self.ollama_manager:
+            messagebox.showwarning("AI недоступен", "Сначала запустите Ollama")
+            return
+        if not self.project_path:
+            messagebox.showwarning("Внимание", "Сначала откройте проект")
+            return
+
+        # Диалог выбора файлов
+        dlg = tk.Toplevel(self.root)
+        dlg.title("Отчёт по файлам")
+        dlg.geometry("640x500")
+        dlg.transient(self.root)
+        dlg.grab_set()
+        c = self.colors
+
+        dlg.configure(bg=c["cream"])
+
+        ttk.Label(dlg, text="📊 Генерация AI-отчёта", font=("Segoe UI", 13, "bold")).pack(pady=10)
+        ttk.Label(dlg, text="Выберите до 2 файлов из проекта для анализа:", font=("Segoe UI", 10)).pack()
+
+        # Список файлов проекта
+        list_frame = ttk.Frame(dlg)
+        list_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+        sb = ttk.Scrollbar(list_frame)
+        sb.pack(side=tk.RIGHT, fill=tk.Y)
+
+        file_listbox = tk.Listbox(
+            list_frame, selectmode=tk.MULTIPLE, font=("Segoe UI", 10),
+            bg=c["cream_soft"], fg=c["ink"],
+            selectbackground=c["lavender"], selectforeground=c["ink"],
+            relief=tk.FLAT, yscrollcommand=sb.set
+        )
+        file_listbox.pack(fill=tk.BOTH, expand=True)
+        sb.config(command=file_listbox.yview)
+
+        # Наполняем список файлами проекта
+        try:
+            allowed = {'.py', '.txt', '.js', '.ts', '.json', '.md', '.yaml', '.yml',
+                       '.html', '.css', '.java', '.cpp', '.c', '.go', '.rs', '.rb', '.php'}
+            all_files = []
+            for f in sorted(Path(self.project_path).rglob('*')):
+                if f.is_file() and f.suffix.lower() in allowed:
+                    rel = f.relative_to(self.project_path)
+                    all_files.append((str(rel), str(f)))
+                    file_listbox.insert(tk.END, str(rel))
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Не удалось получить файлы: {e}")
+            dlg.destroy()
+            return
+
+        # Поле для дополнительного контекста
+        ctx_frame = ttk.LabelFrame(dlg, text="Дополнительный контекст (необязательно)")
+        ctx_frame.pack(fill=tk.X, padx=10, pady=5)
+        extra_ctx = tk.Text(ctx_frame, height=3, font=("Segoe UI", 10),
+                            bg=c["cream_soft"], fg=c["ink"],
+                            insertbackground=c["plum"], relief=tk.FLAT, padx=8, pady=5)
+        extra_ctx.pack(fill=tk.X, padx=5, pady=5)
+        extra_ctx.insert("1.0", "Проанализируй файлы, найди проблемы, предложи улучшения и напиши выводы.")
+
+        btn_frame = ttk.Frame(dlg)
+        btn_frame.pack(fill=tk.X, padx=10, pady=8)
+
+        def _start():
+            selected = file_listbox.curselection()
+            if not selected:
+                messagebox.showwarning("Внимание", "Выберите хотя бы один файл", parent=dlg)
+                return
+            if len(selected) > 2:
+                messagebox.showwarning("Внимание", "Выберите не более 2 файлов", parent=dlg)
+                return
+
+            chosen = [all_files[i] for i in selected]
+            prompt_extra = extra_ctx.get("1.0", tk.END).strip()
+            dlg.destroy()
+            self._run_ai_file_report(chosen, prompt_extra)
+
+        ttk.Button(btn_frame, text="✨ Сгенерировать отчёт", command=_start,
+                   style="Accent.TButton").pack(side=tk.LEFT, padx=4)
+        ttk.Button(btn_frame, text="Отмена", command=dlg.destroy).pack(side=tk.LEFT, padx=4)
+
+    def _run_ai_file_report(self, files: list, extra_context: str = ""):
+        """Читает выбранные файлы и отправляет в AI для генерации подробного отчёта"""
+        self.status_bar.config(text="📊 Генерирую отчёт...")
+
+        def _worker():
+            try:
+                parts = []
+
+                # Собираем содержимое файлов
+                for rel_name, abs_path in files:
+                    try:
+                        with open(abs_path, 'r', encoding='utf-8', errors='replace') as f:
+                            content = f.read()
+                        parts.append(
+                            f"{'='*60}\n"
+                            f"ФАЙЛ: {rel_name}\n"
+                            f"{'='*60}\n"
+                            f"{content}\n"
+                        )
+                    except Exception as e:
+                        parts.append(f"[Не удалось прочитать {rel_name}: {e}]\n")
+
+                # Добавляем технологический стек если есть
+                tech_summary = ""
+                if self.current_project_id and self.db_manager:
+                    try:
+                        cursor = self.db_manager.conn.execute(
+                            "SELECT technology, version FROM tech_stack WHERE project_id = ? LIMIT 20",
+                            (self.current_project_id,)
+                        )
+                        rows = cursor.fetchall()
+                        if rows:
+                            tech_summary = "Технологический стек: " + ", ".join(
+                                f"{r[0]}{' '+r[1] if r[1] else ''}" for r in rows
+                            )
+                    except Exception:
+                        pass
+
+                # Формируем промпт
+                prompt = (
+                    "Ты — опытный разработчик ПО. Тебе предоставлены файлы проекта.\n"
+                    "Напиши ПОДРОБНЫЙ технический отчёт на русском языке со следующими разделами:\n\n"
+                    "1. ОБЩЕЕ ОПИСАНИЕ — что делает этот код, его назначение\n"
+                    "2. АРХИТЕКТУРА — как устроен код, основные компоненты\n"
+                    "3. СИЛЬНЫЕ СТОРОНЫ — что сделано хорошо\n"
+                    "4. ПРОБЛЕМЫ И УЯЗВИМОСТИ — конкретные баги, риски, слабые места\n"
+                    "5. РЕКОМЕНДАЦИИ — конкретные шаги по улучшению с примерами кода\n"
+                    "6. ВЫВОДЫ — итоговое заключение\n\n"
+                )
+                if tech_summary:
+                    prompt += f"{tech_summary}\n\n"
+                if extra_context:
+                    prompt += f"Дополнительный контекст: {extra_context}\n\n"
+                prompt += "СОДЕРЖИМОЕ ФАЙЛОВ:\n\n" + "\n".join(parts)
+
+                response = self.ollama_manager.ask_question(prompt) or "AI не вернул ответ"
+
+                # Показываем результат
+                self.root.after(0, lambda: self._show_report_window(response, files))
+                self.root.after(0, lambda: self.status_bar.config(text="📊 Отчёт готов"))
+
+            except Exception as e:
+                self.logger.error(f"Ошибка генерации отчёта: {e}")
+                self.root.after(0, lambda: self.status_bar.config(text=f"Ошибка отчёта: {e}"))
+
+        threading.Thread(target=_worker, daemon=True).start()
+
+    def _show_report_window(self, report_text: str, files: list):
+        """Показывает отчёт в отдельном окне с возможностью сохранить как .txt"""
+        win = tk.Toplevel(self.root)
+        win.title("AI Отчёт по проекту")
+        win.geometry("800x600")
+        win.transient(self.root)
+        c = self.colors
+        win.configure(bg=c["cream"])
+
+        file_names = ", ".join(rel for rel, _ in files)
+        ttk.Label(win, text=f"📊 Отчёт: {file_names}",
+                  font=("Segoe UI", 12, "bold")).pack(pady=8, padx=10, anchor="w")
+
+        txt = scrolledtext.ScrolledText(
+            win, font=("Segoe UI", 10), wrap=tk.WORD,
+            bg=c["cream_soft"], fg=c["ink"],
+            relief=tk.FLAT, padx=12, pady=10
+        )
+        txt.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        txt.insert("1.0", report_text)
+
+        def _save():
+            path = filedialog.asksaveasfilename(
+                parent=win, defaultextension=".txt",
+                filetypes=[("Текстовые файлы", "*.txt")],
+                initialfile="ai_report.txt"
+            )
+            if path:
+                with open(path, 'w', encoding='utf-8') as f:
+                    f.write(txt.get("1.0", tk.END))
+                messagebox.showinfo("Сохранено", f"Отчёт сохранён: {path}", parent=win)
+
+        btn_row = ttk.Frame(win)
+        btn_row.pack(fill=tk.X, padx=10, pady=8)
+        ttk.Button(btn_row, text="💾 Сохранить как .txt", command=_save,
+                   style="Accent.TButton").pack(side=tk.LEFT, padx=4)
+        ttk.Button(btn_row, text="Закрыть", command=win.destroy).pack(side=tk.LEFT, padx=4)
+
     def schedule_chat_refresh(self):
         """Планирование автоматического обновления чата"""
         if self.current_project_id:
@@ -1876,24 +2077,35 @@ class StartIDE:
         self.root.destroy()
 
     def setup_hotkeys(self):
-        """Настройка горячих клавиш"""
-        self.root.bind('<Control-a>', self.select_all_text)
-        self.root.bind('<Control-A>', self.select_all_text)
-        self.root.bind('<Control-z>', self.undo_text)
-        self.root.bind('<Control-Z>', self.undo_text)
-        self.root.bind('<Control-y>', self.redo_text)
-        self.root.bind('<Control-Y>', self.redo_text)
-        self.root.bind('<Control-c>', self.copy_text)
-        self.root.bind('<Control-C>', self.copy_text)
-        self.root.bind('<Control-v>', self.paste_text)
-        self.root.bind('<Control-V>', self.paste_text)
+        """Горячие клавиши — только те, что не конфликтуют с Text-виджетами на уровне root"""
+        # Ctrl+S и Ctrl+Q — не конфликтуют с Text-виджетами
         self.root.bind('<Control-s>', lambda e: self.save_current_file())
         self.root.bind('<Control-S>', lambda e: self.save_current_file())
         self.root.bind('<Control-q>', lambda e: self.quit_app())
-        # Win+M / Super+M — микрофон
-        self.root.bind('<super-m>', self.toggle_microphone_hotkey)
-        self.root.bind('<Super-m>', self.toggle_microphone_hotkey)
-        self.root.bind('<Control-m>', self.toggle_microphone_hotkey)  # fallback
+        # Ctrl+M — микрофон (Win+M перехватывается Windows, используем Ctrl+M)
+        self.root.bind('<Control-m>', self.toggle_microphone_hotkey)
+        self.root.bind('<Control-M>', self.toggle_microphone_hotkey)
+        # Ctrl+A на уровне root для fallback (Entry и др.)
+        self.root.bind('<Control-a>', self.select_all_text)
+        self.root.bind('<Control-A>', self.select_all_text)
+
+    def _select_all_in(self, widget, event=None):
+        """Выделить весь текст в конкретном виджете"""
+        try:
+            widget.tag_add(tk.SEL, "1.0", tk.END)
+            widget.mark_set(tk.INSERT, tk.END)
+            widget.see(tk.INSERT)
+        except Exception:
+            pass
+        return "break"
+
+    def _redo_in(self, widget, event=None):
+        """Redo в конкретном виджете"""
+        try:
+            widget.edit_redo()
+        except Exception:
+            pass
+        return "break"
 
     def select_all_text(self, event):
         """Выделить весь текст в активном виджете"""
