@@ -2077,17 +2077,67 @@ class StartIDE:
         self.root.destroy()
 
     def setup_hotkeys(self):
-        """Горячие клавиши — только те, что не конфликтуют с Text-виджетами на уровне root"""
-        # Ctrl+S и Ctrl+Q — не конфликтуют с Text-виджетами
-        self.root.bind('<Control-s>', lambda e: self.save_current_file())
-        self.root.bind('<Control-S>', lambda e: self.save_current_file())
-        self.root.bind('<Control-q>', lambda e: self.quit_app())
-        # Ctrl+M — микрофон (Win+M перехватывается Windows, используем Ctrl+M)
-        self.root.bind('<Control-m>', self.toggle_microphone_hotkey)
-        self.root.bind('<Control-M>', self.toggle_microphone_hotkey)
-        # Ctrl+A на уровне root для fallback (Entry и др.)
-        self.root.bind('<Control-a>', self.select_all_text)
-        self.root.bind('<Control-A>', self.select_all_text)
+        """
+        Тройная система биндингов — гарантирует работу в любом виджете:
+          1. bind_class(«Text»)  — класс-уровень, работает внутри любого tk.Text
+          2. root.bind            — для Entry, Listbox, Treeview и др.
+          3. виджет-уровнь     — для редактора, чата и нейрополя
+        """
+        # ─── 1. Класс-уровень — работает в любом tk.Text ───
+        def _cls_save(e):   self.save_current_file();    return "break"
+        def _cls_quit(e):   self.quit_app();             return "break"
+        def _cls_mic(e):    self.toggle_microphone_hotkey(); return "break"
+        def _cls_selall(e):
+            try:
+                e.widget.tag_add(tk.SEL, "1.0", tk.END)
+                e.widget.mark_set(tk.INSERT, tk.END)
+                e.widget.see(tk.INSERT)
+            except Exception: pass
+            return "break"
+        def _cls_redo(e):
+            try: e.widget.edit_redo()
+            except Exception: pass
+            return "break"
+        def _cls_undo(e):
+            try: e.widget.edit_undo()
+            except Exception: pass
+            return "break"
+
+        for seq, fn in [
+            ("<Control-s>",  _cls_save),  ("<Control-S>", _cls_save),
+            ("<Control-q>",  _cls_quit),  ("<Control-Q>", _cls_quit),
+            ("<Control-m>",  _cls_mic),   ("<Control-M>", _cls_mic),
+            ("<Control-a>",  _cls_selall),("<Control-A>", _cls_selall),
+            ("<Control-y>",  _cls_redo),  ("<Control-Y>", _cls_redo),
+            ("<Control-z>",  _cls_undo),  ("<Control-Z>", _cls_undo),
+        ]:
+            self.root.bind_class("Text", seq, fn, add=False)
+
+        # ─── 2. Root-уровень — для Entry, Listbox, прочих ───
+        self.root.bind("<Control-s>",  lambda e: self.save_current_file())
+        self.root.bind("<Control-S>",  lambda e: self.save_current_file())
+        self.root.bind("<Control-q>",  lambda e: self.quit_app())
+        self.root.bind("<Control-Q>",  lambda e: self.quit_app())
+        self.root.bind("<Control-m>",  self.toggle_microphone_hotkey)
+        self.root.bind("<Control-M>",  self.toggle_microphone_hotkey)
+        self.root.bind("<Control-a>",  self.select_all_text)
+        self.root.bind("<Control-A>",  self.select_all_text)
+
+        # ─── 3. Виджет-уровень для редактора, чата, нейропанели ───
+        for widget in [self.editor_text, self.chat_message, self.neuro_question]:
+            if widget is None:
+                continue
+            widget.bind("<Control-s>",  lambda e: (self.save_current_file(), "break")[1])
+            widget.bind("<Control-S>",  lambda e: (self.save_current_file(), "break")[1])
+            widget.bind("<Control-a>",  lambda e: self._select_all_in(widget))
+            widget.bind("<Control-A>",  lambda e: self._select_all_in(widget))
+            widget.bind("<Control-y>",  lambda e: self._redo_in(widget))
+            widget.bind("<Control-Y>",  lambda e: self._redo_in(widget))
+            widget.bind("<Control-z>",  lambda e: self._undo_in(widget))
+            widget.bind("<Control-Z>",  lambda e: self._undo_in(widget))
+            widget.bind("<Control-c>",  lambda e: self._copy_sel(widget))
+            widget.bind("<Control-v>",  lambda e: self._paste_in(widget))
+            widget.bind("<Control-V>",  lambda e: self._paste_in(widget))
 
     def _select_all_in(self, widget, event=None):
         """Выделить весь текст в конкретном виджете"""

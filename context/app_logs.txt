@@ -736,3 +736,47 @@
 2026-05-07 04:51:27 - AppLogger - INFO - VOICE_STOP - Голосовой ввод остановлен: Я бы с Надо идти спать
 [2026-05-07 04:51:31] INFO: FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt
 2026-05-07 04:51:31 - AppLogger - INFO - FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt
+[2026-05-07 05:02:49] INFO: APP_START - StartIDE запущена
+2026-05-07 05:02:49 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 05:02:49] INFO: DB_INIT - База данных инициализирована
+2026-05-07 05:02:49 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 05:02:49] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 05:02:49 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 05:02:51] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 05:02:51 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 05:02:52] INFO: VOICE_INIT - Голосовой менеджер инициализирован
+2026-05-07 05:02:52 - AppLogger - INFO - VOICE_INIT - Голосовой менеджер инициализирован
+[2026-05-07 05:02:59] INFO: APP_START - StartIDE запущена
+2026-05-07 05:02:59 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 05:02:59] INFO: DB_INIT - База данных инициализирована
+2026-05-07 05:02:59 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 05:02:59] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 05:02:59 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 05:03:01] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 05:03:01 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 05:03:02] INFO: VOICE_INIT - Голосовой менеджер инициализирован
+2026-05-07 05:03:02 - AppLogger - INFO - VOICE_INIT - Голосовой менеджер инициализирован
+[2026-05-07 05:03:22] INFO: APP_START - StartOffice запущена
+2026-05-07 05:03:22 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 05:03:22] INFO: DB_INIT - База данных инициализирована
+2026-05-07 05:03:22 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 05:03:22] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 05:03:22 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 05:03:25] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 05:03:25 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 05:03:42] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+2026-05-07 05:03:42 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+[2026-05-07 05:04:21] INFO: AI_INTERACTION - Запрос: Анализ context.txt: .ai_context.txt... | Статус: SUCCESS
+2026-05-07 05:04:21 - AppLogger - INFO - AI_INTERACTION - Запрос: Анализ context.txt: .ai_context.txt... | Статус: SUCCESS
+[2026-05-07 05:04:30] INFO: FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt
+2026-05-07 05:04:30 - AppLogger - INFO - FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt
+[2026-05-07 05:04:31] INFO: FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt
+2026-05-07 05:04:31 - AppLogger - INFO - FILE_SAVE - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app\document.txt
+[2026-05-07 05:05:46] INFO: APP_START - StartOffice запущена
+2026-05-07 05:05:46 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 05:05:46] INFO: DB_INIT - База данных инициализирована
+2026-05-07 05:05:46 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 05:05:46] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 05:05:46 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 05:05:48] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 05:05:48 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
