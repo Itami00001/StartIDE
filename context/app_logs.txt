@@ -372,3 +372,219 @@
 2026-05-07 01:48:30 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
 [2026-05-07 01:48:55] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: ...
 2026-05-07 01:48:55 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: ...
+[2026-05-07 01:55:06] INFO: APP_START - StartIDE запущена
+2026-05-07 01:55:06 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 01:55:06] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:55:06 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:55:06] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:55:06 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:55:08] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 01:55:08 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 01:55:08] WARNING: WARNING - Голосовой менеджер недоступен
+2026-05-07 01:55:08 - AppLogger - WARNING - WARNING - Голосовой менеджер недоступен
+[2026-05-07 01:55:37] INFO: PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+2026-05-07 01:55:37 - AppLogger - INFO - PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+[2026-05-07 01:56:36] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 01:56:36 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 01:56:46] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: ...
+2026-05-07 01:56:46 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: ...
+[2026-05-07 01:57:05] INFO: UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+2026-05-07 01:57:05 - AppLogger - INFO - UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+[2026-05-07 01:58:25] INFO: UI_OPEN_FILE_MANAGER - Проект 3
+2026-05-07 01:58:25 - AppLogger - INFO - UI_OPEN_FILE_MANAGER - Проект 3
+[2026-05-07 01:58:28] INFO: UI_OPEN_FILE_MANAGER - Проект 3
+2026-05-07 01:58:28 - AppLogger - INFO - UI_OPEN_FILE_MANAGER - Проект 3
+[2026-05-07 01:58:31] INFO: UI_OPEN_FILE_MANAGER - Проект 3
+2026-05-07 01:58:31 - AppLogger - INFO - UI_OPEN_FILE_MANAGER - Проект 3
+[2026-05-07 01:58:34] INFO: UI_OPEN_FILE_MANAGER - Проект 3
+2026-05-07 01:58:34 - AppLogger - INFO - UI_OPEN_FILE_MANAGER - Проект 3
+[2026-05-07 01:58:40] INFO: UI_AUTO_DISCOVER_FILES - Проект 3, файлов: 0
+2026-05-07 01:58:40 - AppLogger - INFO - UI_AUTO_DISCOVER_FILES - Проект 3, файлов: 0
+[2026-05-07 01:58:41] INFO: UI_SHOW_PROJECT_STATS - Проект 3
+2026-05-07 01:58:41 - AppLogger - INFO - UI_SHOW_PROJECT_STATS - Проект 3
+[2026-05-07 01:59:18] INFO: APP_START - StartOffice запущена
+2026-05-07 01:59:18 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 01:59:18] INFO: DB_INIT - База данных инициализирована
+2026-05-07 01:59:18 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 01:59:18] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 01:59:18 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 01:59:20] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 01:59:20 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 01:59:28] ERROR: ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'refresh_project_details'
+2026-05-07 01:59:28 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'refresh_project_details'
+[2026-05-07 02:00:06] ERROR: ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'refresh_project_details'
+2026-05-07 02:00:06 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'refresh_project_details'
+[2026-05-07 02:00:09] INFO: UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+2026-05-07 02:00:09 - AppLogger - INFO - UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+[2026-05-07 02:00:21] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+2026-05-07 02:00:21 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+[2026-05-07 02:01:04] INFO: APP_START - StartOffice запущена
+2026-05-07 02:01:04 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 02:01:04] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:01:04 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:01:04] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:01:04 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:01:06] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 02:01:06 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 02:01:12] ERROR: ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'refresh_project_details'
+2026-05-07 02:01:12 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'refresh_project_details'
+[2026-05-07 02:03:17] INFO: APP_START - StartIDE запущена
+2026-05-07 02:03:17 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 02:03:17] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:03:17 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:03:17] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:03:17 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:03:19] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 02:03:19 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 02:03:19] WARNING: WARNING - Голосовой менеджер недоступен
+2026-05-07 02:03:19 - AppLogger - WARNING - WARNING - Голосовой менеджер недоступен
+[2026-05-07 02:03:22] INFO: UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+2026-05-07 02:03:22 - AppLogger - INFO - UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+[2026-05-07 02:05:32] INFO: APP_START - StartOffice запущена
+2026-05-07 02:05:32 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 02:05:32] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:05:33 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:05:33] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:05:33 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:05:35] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 02:05:35 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 02:06:12] ERROR: ERROR - Ошибка открытия проекта: name 'project_data' is not defined
+2026-05-07 02:06:12 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: name 'project_data' is not defined
+[2026-05-07 02:07:21] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+2026-05-07 02:07:21 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+[2026-05-07 02:09:31] ERROR: ERROR - Ошибка открытия проекта: name 'project_data' is not defined
+2026-05-07 02:09:31 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: name 'project_data' is not defined
+[2026-05-07 02:13:49] INFO: APP_START - StartOffice запущена
+2026-05-07 02:13:49 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 02:13:49] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:13:49 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:13:49] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:13:49 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:13:51] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 02:13:51 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 02:14:54] ERROR: ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'send_context_to_neuro'
+2026-05-07 02:14:54 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'send_context_to_neuro'
+[2026-05-07 02:15:30] ERROR: ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'send_context_to_neuro'
+2026-05-07 02:15:30 - AppLogger - ERROR - ERROR - Ошибка открытия проекта: 'StartOffice' object has no attribute 'send_context_to_neuro'
+[2026-05-07 02:19:44] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+2026-05-07 02:19:44 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+[2026-05-07 02:20:36] INFO: APP_START - StartOffice запущена
+2026-05-07 02:20:36 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 02:20:36] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:20:36 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:20:36] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:20:36 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:20:38] INFO: APP_START - StartIDE запущена
+2026-05-07 02:20:38 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 02:20:38] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:20:38 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:20:38] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:20:38 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:20:39] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 02:20:39 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 02:20:41] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 02:20:41 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 02:20:41] WARNING: WARNING - Голосовой менеджер недоступен
+2026-05-07 02:20:41 - AppLogger - WARNING - WARNING - Голосовой менеджер недоступен
+[2026-05-07 02:20:45] INFO: APP_START - StartOffice запущена
+2026-05-07 02:20:45 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 02:20:45] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:20:45 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:20:45] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:20:45 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:20:47] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 02:20:47 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 02:20:57] INFO: APP_START - StartOffice запущена
+2026-05-07 02:20:57 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 02:20:57] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:20:57 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:20:57] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:20:57 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:20:59] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 02:20:59 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 02:21:52] INFO: PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+2026-05-07 02:21:52 - AppLogger - INFO - PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+[2026-05-07 02:22:28] INFO: UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+2026-05-07 02:22:28 - AppLogger - INFO - UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+[2026-05-07 02:23:31] INFO: APP_START - StartIDE запущена
+2026-05-07 02:23:31 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 02:23:31] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:23:31 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:23:31] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:23:31 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:23:33] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 02:23:33 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 02:23:33] WARNING: WARNING - Голосовой менеджер недоступен
+2026-05-07 02:23:33 - AppLogger - WARNING - WARNING - Голосовой менеджер недоступен
+[2026-05-07 02:23:42] INFO: PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+2026-05-07 02:23:42 - AppLogger - INFO - PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+[2026-05-07 02:24:28] INFO: UI_SHOW_PROJECT_STATS - Проект 3
+2026-05-07 02:24:28 - AppLogger - INFO - UI_SHOW_PROJECT_STATS - Проект 3
+[2026-05-07 02:24:36] INFO: UI_AUTO_DISCOVER_FILES - Проект 3, файлов: 0
+2026-05-07 02:24:36 - AppLogger - INFO - UI_AUTO_DISCOVER_FILES - Проект 3, файлов: 0
+[2026-05-07 02:24:38] INFO: UI_SHOW_PROJECT_STATS - Проект 3
+2026-05-07 02:24:38 - AppLogger - INFO - UI_SHOW_PROJECT_STATS - Проект 3
+[2026-05-07 02:36:52] INFO: APP_START - StartIDE запущена
+2026-05-07 02:36:52 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 02:36:52] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:36:52 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:36:52] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:36:52 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:36:55] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 02:36:55 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 02:36:55] WARNING: WARNING - Голосовой менеджер недоступен
+2026-05-07 02:36:55 - AppLogger - WARNING - WARNING - Голосовой менеджер недоступен
+[2026-05-07 02:36:58] INFO: UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+2026-05-07 02:36:58 - AppLogger - INFO - UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+[2026-05-07 02:38:10] INFO: APP_START - StartIDE запущена
+2026-05-07 02:38:10 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 02:38:10] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:38:10 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:38:10] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:38:10 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:38:12] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 02:38:12 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 02:38:12] WARNING: WARNING - Голосовой менеджер недоступен
+2026-05-07 02:38:12 - AppLogger - WARNING - WARNING - Голосовой менеджер недоступен
+[2026-05-07 02:38:16] INFO: UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+2026-05-07 02:38:16 - AppLogger - INFO - UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+[2026-05-07 02:38:55] INFO: APP_START - StartOffice запущена
+2026-05-07 02:38:55 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 02:38:55] INFO: DB_INIT - База данных инициализирована
+2026-05-07 02:38:55 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 02:38:55] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 02:38:55 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 02:38:57] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 02:38:57 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 02:45:28] INFO: PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+2026-05-07 02:45:28 - AppLogger - INFO - PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+[2026-05-07 02:45:49] INFO: UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+2026-05-07 02:45:49 - AppLogger - INFO - UI_OPEN_PROJECT_MANAGER - Открыто окно управления проектами
+[2026-05-07 02:46:03] INFO: VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+2026-05-07 02:46:03 - AppLogger - INFO - VOICE_START - Начат улучшенный голосовой ввод (реальное время)
+[2026-05-07 02:46:15] INFO: VOICE_STOP - Завершен улучшенный голосовой ввод: Привет...
+2026-05-07 02:46:15 - AppLogger - INFO - VOICE_STOP - Завершен улучшенный голосовой ввод: Привет...
+[2026-05-07 03:35:37] INFO: APP_START - StartOffice запущена
+2026-05-07 03:35:37 - AppLogger - INFO - APP_START - StartOffice запущена
+[2026-05-07 03:35:37] INFO: DB_INIT - База данных инициализирована
+2026-05-07 03:35:37 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 03:35:37] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 03:35:37 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 03:35:40] INFO: VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+2026-05-07 03:35:40 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод для документов инициализирован
+[2026-05-07 03:35:40] INFO: APP_START - StartIDE запущена
+2026-05-07 03:35:40 - AppLogger - INFO - APP_START - StartIDE запущена
+[2026-05-07 03:35:40] INFO: DB_INIT - База данных инициализирована
+2026-05-07 03:35:40 - AppLogger - INFO - DB_INIT - База данных инициализирована
+[2026-05-07 03:35:40] INFO: DB_INIT - Менеджеры проектов и файлов инициализированы
+2026-05-07 03:35:40 - AppLogger - INFO - DB_INIT - Менеджеры проектов и файлов инициализированы
+[2026-05-07 03:35:43] INFO: VOICE_INIT - Улучшенный голосовой ввод инициализирован
+2026-05-07 03:35:43 - AppLogger - INFO - VOICE_INIT - Улучшенный голосовой ввод инициализирован
+[2026-05-07 03:35:44] INFO: VOICE_INIT - Голосовой менеджер инициализирован
+2026-05-07 03:35:44 - AppLogger - INFO - VOICE_INIT - Голосовой менеджер инициализирован
+[2026-05-07 03:35:54] INFO: PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+2026-05-07 03:35:54 - AppLogger - INFO - PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+[2026-05-07 03:36:19] INFO: PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+2026-05-07 03:36:19 - AppLogger - INFO - PROJECT_OPEN - C:\Users\Itami01\OneDrive\Desktop\Roysov_DB\finance-project\finance-app (ID: 3)
+[2026-05-07 03:37:11] INFO: FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt
+2026-05-07 03:37:11 - AppLogger - INFO - FILE_OPEN - C:/Users/Itami01/OneDrive/Desktop/Roysov_DB/finance-project/finance-app/document.txt

@@ -11,7 +11,7 @@ from typing import Dict
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from shared.ollama_manager import OllamaManager
 from shared.project_context import ProjectContext
-from shared.shared_chat_manager import SharedChatManager
+from shared.chat_manager import ChatManager
 from shared.database_manager import DatabaseManager
 from shared.git_manager import GitManager
 from shared.app_logger import AppLogger
@@ -36,54 +36,55 @@ class StartIDE:
         self.root = tk.Tk()
         self.root.title("StartIDE")
         self.root.geometry("1200x800")
-        
+
         # Переменные проекта
         self.project_path = None
         self.ollama_manager = None
         self.project_context = None
         self.shared_chat_manager = None
         self.last_chat_timestamp = None
-        
+
         # Новая система баз данных
         self.db_manager = None
         self.git_manager = None
         self.current_project_id = None
-        
+        self.chat_manager = None
+
         # Голосовой менеджер для AI чата
         self.voice_manager = None
         self.advanced_voice_manager = None
-        
+
         # Управление проектами и файлами
         self.project_manager = None
         self.file_tracker = None
-        
+
         # Разделенное логирование
         self.app_logger = None
-        
+
         # Настройка логирования
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
-        
+
         # Привязка горячих клавиш
         self.root.bind('<Control-s>', lambda e: self.save_current_file())
         self.root.bind('<Control-S>', lambda e: self.save_current_file())
         self.root.bind('<Control-q>', lambda e: self.quit_app())
-        
+
         # Инициализация новой системы баз данных
         self.init_database()
-        
+
         # Создание интерфейса
         self.setup_ui()
-        
+
         # Попытка подключения к Ollama
         self.init_ollama()
-    
+
     def setup_ui(self):
         """Создание интерфейса"""
         # Главное меню
         menubar = tk.Menu(self.root)
         self.root.config(menu=menubar)
-        
+
         # Файл меню
         file_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Файл", menu=file_menu)
@@ -94,7 +95,7 @@ class StartIDE:
         file_menu.add_command(label="Сохранить как...", command=self.save_file_as)
         file_menu.add_separator()
         file_menu.add_command(label="Выход", command=self.quit_app)
-        
+
         # Проект меню
         project_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Проект", menu=project_menu)
@@ -103,183 +104,263 @@ class StartIDE:
         project_menu.add_separator()
         project_menu.add_command(label="🔍 Автообнаружение файлов", command=self.auto_discover_files)
         project_menu.add_command(label="📊 Статистика проекта", command=self.show_project_stats)
-        
+
         # Виджет меню
         view_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="Вид", menu=view_menu)
         view_menu.add_command(label="Показать/Скрыть Нейро", command=self.toggle_neuro_panel)
-        
+
         # Основная панель
         main_paned = ttk.PanedWindow(self.root, orient=tk.HORIZONTAL)
         main_paned.pack(fill=tk.BOTH, expand=True)
-        
-        # Левая панель (проводник файлов)
-        self.left_frame = ttk.Frame(main_paned, width=250)
+
+        # Левая панель (проводник файлов + отслеживание)
+        self.left_frame = ttk.Frame(main_paned, width=300)
         main_paned.add(self.left_frame, weight=1)
-        
+
         # Центральная панель (редактор)
         self.center_frame = ttk.Frame(main_paned)
         main_paned.add(self.center_frame, weight=3)
-        
+
         # Правая панель (Нейро)
         self.right_frame = ttk.Frame(main_paned, width=300)
         main_paned.add(self.right_frame, weight=1)
-        
+
         self.setup_file_explorer()
         self.setup_editor()
         self.setup_neuro_panel()
-        
-        # Статус бар
-        self.status_bar = ttk.Label(self.root, text="Готов к работе", relief=tk.SUNKEN)
-        self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
-    
+
+        # Улучшенный статус-бар с индикаторами
+        status_frame = ttk.Frame(self.root)
+        status_frame.pack(side=tk.BOTTOM, fill=tk.X)
+
+        # Основной статус
+        self.status_bar = ttk.Label(status_frame, text="Готов к работе", relief=tk.SUNKEN)
+        self.status_bar.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=2, pady=1)
+
+        # Индикатор проекта
+        self.project_status_label = ttk.Label(status_frame, text="📁 Нет проекта", foreground="gray")
+        self.project_status_label.pack(side=tk.LEFT, padx=5)
+
+        # Индикатор Git
+        self.git_status_indicator = ttk.Label(status_frame, text="🌿 -", foreground="gray")
+        self.git_status_indicator.pack(side=tk.LEFT, padx=5)
+
+        # Индикатор AI
+        self.ai_status_indicator = ttk.Label(status_frame, text="🤖 -", foreground="gray")
+        self.ai_status_indicator.pack(side=tk.LEFT, padx=5)
+
+        # Индикатор голосового ввода
+        self.voice_status_indicator = ttk.Label(status_frame, text="🎤 -", foreground="gray")
+        self.voice_status_indicator.pack(side=tk.LEFT, padx=5)
+
     def setup_file_explorer(self):
-        """Настройка проводника файлов"""
-        # Заголовок
-        ttk.Label(self.left_frame, text="Проводник файлов", font=("Arial", 10, "bold")).pack(pady=5)
-        
-        # Дерево файлов
-        self.file_tree = ttk.Treeview(self.left_frame, columns=("size", "type"), show="tree")
+        """Настройка проводника файлов с панелью отслеживания"""
+        # Создаем вертикальную панель для разделения
+        left_paned = ttk.PanedWindow(self.left_frame, orient=tk.VERTICAL)
+        left_paned.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        # Верхняя панель - проводник файлов
+        file_frame = ttk.Frame(left_paned)
+        left_paned.add(file_frame, weight=2)
+
+        # Нижняя панель - отслеживание
+        tracking_frame = ttk.Frame(left_paned)
+        left_paned.add(tracking_frame, weight=1)
+
+        # Настройка проводника файлов
+        ttk.Label(file_frame, text="📁 Проводник файлов", font=("Arial", 10, "bold")).pack(pady=5)
+
+        self.file_tree = ttk.Treeview(file_frame, columns=("size", "type"), show="tree")
         self.file_tree.heading("#0", text="Файлы")
         self.file_tree.column("#0", width=200)
         self.file_tree.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-        
+
         # Контекстное меню
         self.file_tree.bind("<Button-3>", self.show_file_context_menu)
         self.file_tree.bind("<Double-1>", self.open_file_in_editor)
-        
-        # Кнопки управления
-        button_frame = ttk.Frame(self.left_frame)
-        button_frame.pack(fill=tk.X, padx=5, pady=5)
-        
-        ttk.Button(button_frame, text="Создать файл", command=self.create_file).pack(side=tk.LEFT, padx=2)
-        ttk.Button(button_frame, text="Создать папку", command=self.create_folder).pack(side=tk.LEFT, padx=2)
-        ttk.Button(button_frame, text="Обновить", command=self.refresh_file_tree).pack(side=tk.LEFT, padx=2)
-    
+
+        # Кнопки управления файлами
+        file_button_frame = ttk.Frame(file_frame)
+        file_button_frame.pack(fill=tk.X, padx=5, pady=5)
+
+        ttk.Button(file_button_frame, text="Создать файл", command=self.create_file).pack(side=tk.LEFT, padx=2)
+        ttk.Button(file_button_frame, text="Создать папку", command=self.create_folder).pack(side=tk.LEFT, padx=2)
+        ttk.Button(file_button_frame, text="Обновить", command=self.refresh_file_tree).pack(side=tk.LEFT, padx=2)
+
+        # Настройка панели отслеживания
+        self.setup_tracking_panel(tracking_frame)
+
+    def setup_tracking_panel(self, parent_frame):
+        """Настройка панели отслеживания проекта"""
+        # Заголовок
+        ttk.Label(parent_frame, text="🔍 Отслеживание проекта", font=("Arial", 10, "bold")).pack(pady=5)
+
+        # Создаем notebook для вкладок
+        self.tracking_notebook = ttk.Notebook(parent_frame)
+        self.tracking_notebook.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        # Вкладка отслеживания файлов
+        files_tab = ttk.Frame(self.tracking_notebook)
+        self.tracking_notebook.add(files_tab, text="📄 Файлы")
+
+        # Список отслеживаемых файлов
+        self.tracking_listbox = tk.Listbox(files_tab, font=("Arial", 9))
+        self.tracking_listbox.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        # Кнопки управления отслеживанием
+        tracking_button_frame = ttk.Frame(files_tab)
+        tracking_button_frame.pack(fill=tk.X, padx=5, pady=5)
+
+        ttk.Button(tracking_button_frame, text="➕ Добавить", command=self.add_file_to_tracking).pack(side=tk.LEFT, padx=2)
+        ttk.Button(tracking_button_frame, text="➖ Удалить", command=self.remove_file_from_tracking).pack(side=tk.LEFT, padx=2)
+        ttk.Button(tracking_button_frame, text="🔄 Обновить", command=self.refresh_tracking_list).pack(side=tk.LEFT, padx=2)
+
+        # Вкладка статистики
+        stats_tab = ttk.Frame(self.tracking_notebook)
+        self.tracking_notebook.add(stats_tab, text="📊 Статистика")
+
+        # Текстовое поле для статистики
+        self.stats_text = scrolledtext.ScrolledText(stats_tab, height=8, font=("Arial", 9))
+        self.stats_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        self.stats_text.config(state=tk.DISABLED)
+
+        # Вкладка Git
+        git_tab = ttk.Frame(self.tracking_notebook)
+        self.tracking_notebook.add(git_tab, text="🌿 Git")
+
+        # Текстовое поле для Git информации
+        self.git_text = scrolledtext.ScrolledText(git_tab, height=8, font=("Arial", 9))
+        self.git_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        self.git_text.config(state=tk.DISABLED)
+
+        # Кнопка обновления Git
+        ttk.Button(git_tab, text="🔄 Обновить Git", command=self.update_git_info).pack(pady=5)
+
     def setup_editor(self):
         """Настройка редактора кода"""
         # Заголовок
         ttk.Label(self.center_frame, text="Редактор кода", font=("Arial", 10, "bold")).pack(pady=5)
-        
+
         # Текстовый редактор
         self.editor_frame = ttk.Frame(self.center_frame)
         self.editor_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-        
+
         # Создаем Notebook для редактора и чата
         self.center_notebook = ttk.Notebook(self.editor_frame)
         self.center_notebook.pack(fill=tk.BOTH, expand=True)
-        
+
         # Вкладка редактора
         self.editor_tab = ttk.Frame(self.center_notebook)
         self.center_notebook.add(self.editor_tab, text="📝 Редактор")
-        
+
         # Вкладка общего чата
         self.chat_tab = ttk.Frame(self.center_notebook)
         self.center_notebook.add(self.chat_tab, text="💬 Общий чат")
-        
+
         self.setup_editor_tab()
         self.setup_chat_tab()
-        
+
         # Информация о файле
         self.file_info_label = ttk.Label(self.center_frame, text="Файл не открыт")
         self.file_info_label.pack(fill=tk.X, padx=5, pady=2)
-        
+
         # Переменные для отслеживания изменений
         self.current_file = None
         self.file_modified = False
         self.original_content = ""
-    
+
     def setup_editor_tab(self):
         """Настройка вкладки редактора"""
         # Панель инструментов редактора
         toolbar_frame = ttk.Frame(self.editor_tab)
         toolbar_frame.pack(fill=tk.X, pady=(0, 5))
-        
+
         self.save_button = ttk.Button(toolbar_frame, text="💾 Сохранить", command=self.save_current_file, state=tk.DISABLED)
         self.save_button.pack(side=tk.LEFT, padx=2)
-        
+
         self.send_file_button = ttk.Button(toolbar_frame, text="📤 Отправить файл", command=self.send_current_file_to_chat)
         self.send_file_button.pack(side=tk.LEFT, padx=2)
-        
+
         ttk.Separator(toolbar_frame, orient=tk.VERTICAL).pack(side=tk.LEFT, fill=tk.Y, padx=5)
-        
+
         self.file_path_label = ttk.Label(toolbar_frame, text="Файл не открыт", foreground="gray")
         self.file_path_label.pack(side=tk.LEFT, padx=5)
-        
+
         # Текстовое поле с прокруткой
         text_container = ttk.Frame(self.editor_tab)
         text_container.pack(fill=tk.BOTH, expand=True)
-        
+
         self.editor_text = tk.Text(text_container, wrap=tk.WORD, font=("Consolas", 10), undo=True)
         scrollbar_y = ttk.Scrollbar(text_container, orient=tk.VERTICAL, command=self.editor_text.yview)
         scrollbar_x = ttk.Scrollbar(text_container, orient=tk.HORIZONTAL, command=self.editor_text.xview)
-        
+
         self.editor_text.grid(row=0, column=0, sticky="nsew")
         scrollbar_y.grid(row=0, column=1, sticky="ns")
         scrollbar_x.grid(row=1, column=0, sticky="ew")
-        
+
         text_container.grid_rowconfigure(0, weight=1)
         text_container.grid_columnconfigure(0, weight=1)
-        
+
         self.editor_text.config(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
-        
+
         # Отслеживание изменений
         self.editor_text.bind('<KeyRelease>', self.on_text_changed)
         self.editor_text.bind('<Button-1>', self.on_text_changed)
-    
+
     def setup_chat_tab(self):
         """Настройка вкладки общего чата"""
         # Заголовок
         ttk.Label(self.chat_tab, text="💬 Общий чат проекта", font=("Arial", 12, "bold")).pack(pady=10)
-        
+
         # Кнопки управления чатом
         chat_controls = ttk.Frame(self.chat_tab)
         chat_controls.pack(fill=tk.X, padx=10, pady=5)
-        
+
         ttk.Button(chat_controls, text="🔄 Обновить чат", command=self.refresh_chat).pack(side=tk.LEFT, padx=2)
         ttk.Button(chat_controls, text="🗑️ Очистить чат", command=self.clear_chat).pack(side=tk.LEFT, padx=2)
         ttk.Button(chat_controls, text="📤 Отправить файл в чат", command=self.send_current_file_to_chat).pack(side=tk.LEFT, padx=2)
-        
+
         # Поле для сообщения
         msg_frame = ttk.LabelFrame(self.chat_tab, text="Сообщение")
         msg_frame.pack(fill=tk.X, padx=10, pady=5)
-        
+
         self.chat_message = tk.Text(msg_frame, height=3, wrap=tk.WORD)
         self.chat_message.pack(fill=tk.X, padx=5, pady=5)
-        
+
         ttk.Button(msg_frame, text="📨 Отправить сообщение", command=self.send_chat_message).pack(pady=5)
-        
+
         # История чата
         chat_history_frame = ttk.LabelFrame(self.chat_tab, text="История чата")
         chat_history_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-        
+
         self.chat_history = scrolledtext.ScrolledText(chat_history_frame, height=20, wrap=tk.WORD, state=tk.DISABLED)
         self.chat_history.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-        
+
         # Автообновление чата каждые 5 секунд
         self.schedule_chat_refresh()
-    
+
     def setup_neuro_panel(self):
         """Настройка панели Нейро"""
         # Заголовок
         ttk.Label(self.right_frame, text="🧠 Нейро", font=("Arial", 10, "bold")).pack(pady=5)
-        
+
         # Статус подключения
         self.neuro_status_label = ttk.Label(self.right_frame, text="Статус: Не подключено", foreground="red")
         self.neuro_status_label.pack(pady=5)
-        
+
         # Чат с нейросетью
         ttk.Label(self.right_frame, text="Вопрос к нейросети:").pack(pady=5)
-        
+
         self.neuro_question = tk.Text(self.right_frame, height=3, wrap=tk.WORD)
         self.neuro_question.pack(fill=tk.X, padx=5, pady=2)
-        
+
         # Кнопки для ввода вопроса
         question_buttons_frame = ttk.Frame(self.right_frame)
         question_buttons_frame.pack(fill=tk.X, padx=5, pady=2)
-        
+
         ttk.Button(question_buttons_frame, text="📝 Отправить вопрос", command=self.ask_neuro).pack(side=tk.LEFT, padx=2)
-        
+
         # Кнопка голосового ввода (улучшенная версия)
         if ADVANCED_VOICE_AVAILABLE:
             self.voice_button = ttk.Button(question_buttons_frame, text="🎤 Голос (реальное время)", command=self.toggle_advanced_voice_input)
@@ -293,16 +374,16 @@ class StartIDE:
             self.is_recording_voice = False
         else:
             ttk.Button(question_buttons_frame, text="🎤 Голос (недоступен)", state=tk.DISABLED).pack(side=tk.LEFT, padx=2)
-        
+
         # Ответ нейросети
         ttk.Label(self.right_frame, text="Ответ:").pack(pady=5)
-        
+
         self.neuro_response = tk.Text(self.right_frame, height=15, wrap=tk.WORD, state=tk.DISABLED)
         self.neuro_response.pack(fill=tk.BOTH, expand=True, padx=5, pady=2)
-        
+
         # Кнопка обновления контекста
         ttk.Button(self.right_frame, text="Обновить контекст", command=self.update_neuro_context).pack(pady=5)
-    
+
     def init_ollama(self):
         """Инициализация подключения к Ollama"""
         def check_connection():
@@ -313,29 +394,30 @@ class StartIDE:
             else:
                 self.neuro_status_label.config(text="Статус: Ошибка подключения", foreground="red")
                 self.logger.error("Не удалось подключиться к Ollama")
-        
+
         threading.Thread(target=check_connection, daemon=True).start()
-    
+
     def init_database(self):
         """Инициализация новой системы баз данных"""
         try:
             # Инициализация логгера
             self.app_logger = AppLogger("context")
             self.app_logger.log_app_start("StartIDE")
-            
+
             # Инициализация базы данных
             self.db_manager = DatabaseManager("context")
             self.app_logger.log_database_action("init", "База данных инициализирована")
             self.logger.info("База данных инициализирована")
-            
+
+            # Инициализация chat_manager
+            from shared.chat_manager import ChatManager
+            self.chat_manager = ChatManager(self.db_manager)
+
             # Инициализация менеджеров проектов и файлов
             self.project_manager = ProjectManager("context")
             self.file_tracker = FileTracker("context")
             self.app_logger.log_database_action("init", "Менеджеры проектов и файлов инициализированы")
-            
-            # Настройка горячих клавиш
-            self.setup_hotkeys()
-            
+
             # Инициализация голосового менеджера (опционально)
             if ADVANCED_VOICE_AVAILABLE:
                 try:
@@ -351,98 +433,102 @@ class StartIDE:
                     self.advanced_voice_manager = None
                     self.app_logger.log_warning("Голосовой ввод недоступен (требуется установка speechrecognition)")
                     self.logger.warning("Голосовой ввод недоступен")
-            
+
             # Инициализация голосового менеджера (старый метод)
             try:
-                from StartIDE.voice_input_manager import VoiceInputManager
-                self.voice_manager = VoiceInputManager()
+                from StartIDE.voice_manager import VoiceManager
+                self.voice_manager = VoiceManager()
                 self.app_logger.log_voice_action("init", "Голосовой менеджер инициализирован")
             except ImportError:
                 self.voice_manager = None
                 self.app_logger.log_warning("Голосовой менеджер недоступен")
-                
+
         except Exception as e:
             if self.app_logger:
                 self.app_logger.log_error(f"Ошибка инициализации базы данных: {e}")
             self.logger.error(f"Ошибка инициализации базы данных: {e}")
             messagebox.showerror("Ошибка", f"Не удалось инициализировать базу данных: {e}")
-    
+
     def new_project(self):
         """Создание нового проекта"""
         folder_path = filedialog.askdirectory(title="Выберите папку для проекта")
         if folder_path:
             self.project_path = Path(folder_path)
-            
+
             # Инициализация новой системы баз данных
             if self.db_manager:
                 self.current_project_id = self.db_manager.get_or_create_project(str(self.project_path))
                 self.git_manager = GitManager(str(self.project_path), self.db_manager)
-                
+
                 # Обновляем Git контекст
                 if self.git_manager.is_git_repo:
                     threading.Thread(target=self.git_manager.update_git_context, args=(self.current_project_id,), daemon=True).start()
-            
+
+            # Инициализация чата с sqlite3
+            self.chat_manager = ChatManager(self.db_manager)
+
             # Сохраняем старую систему для совместимости
             self.project_context = ProjectContext(str(self.project_path))
-            self.shared_chat_manager = SharedChatManager(str(self.project_path))
             self.project_context.update_context("project_created", f"Проект создан в {folder_path}")
-            
+
             self.refresh_file_tree()
             self.status_bar.config(text=f"Проект: {self.project_path.name}")
-            
+
             # Отправляем контекст в нейросеть
             if self.ollama_manager:
                 threading.Thread(target=self.send_context_to_neuro, daemon=True).start()
-    
+
     def open_project(self):
         """Открытие существующего проекта автоматически"""
         folder_path = filedialog.askdirectory(title="Выберите папку проекта")
         if folder_path:
             self.project_path = Path(folder_path)
-            
+
             # Проверяем, что это действительно проект
             if not self._is_valid_project_folder(self.project_path):
                 result = messagebox.askyesno(
-                    "Внимание", 
+                    "Внимание",
                     "Выбранная папка не похожа на программный проект. Открыть anyway?"
                 )
                 if not result:
                     return
-            
+
             # Инициализация новой системы баз данных
             if self.db_manager:
                 self.current_project_id = self.db_manager.get_or_create_project(str(self.project_path))
                 self.git_manager = GitManager(str(self.project_path), self.db_manager)
-                
+
                 # Автоанализ проекта в фоне
                 from shared.project_auto_analyzer import ProjectAutoAnalyzer
                 analyzer = ProjectAutoAnalyzer(self.db_manager)
-                
+
                 threading.Thread(
-                    target=self._auto_analyze_and_update, 
-                    args=(analyzer, str(self.project_path)), 
+                    target=self._auto_analyze_and_update,
+                    args=(analyzer, str(self.project_path)),
                     daemon=True
                 ).start()
-                
+
                 # Обновляем Git контекст
                 if self.git_manager.is_git_repo:
                     threading.Thread(target=self.git_manager.update_git_context, args=(self.current_project_id,), daemon=True).start()
-            
+
+            # Инициализация чата с sqlite3
+            self.chat_manager = ChatManager(self.db_manager)
+
             # Сохраняем старую систему для совместимости
             self.project_context = ProjectContext(str(self.project_path))
-            self.shared_chat_manager = SharedChatManager(str(self.project_path))
             self.project_context.update_context("project_opened", f"Проект открыт: {self.project_path}")
-            
+
             self.refresh_file_tree()
             self.status_bar.config(text=f"Проект: {self.project_path.name} (анализ...)")
-            
+
             # Отправляем контекст в нейросеть
             if self.ollama_manager:
                 threading.Thread(target=self.send_context_to_neuro, daemon=True).start()
-                
+
             if self.app_logger:
                 self.app_logger.log_project_open(str(self.project_path), self.current_project_id)
-    
+
     def _is_valid_project_folder(self, path: Path) -> bool:
         """Проверка, является ли папка проектом"""
         # Индикаторы проекта
@@ -451,15 +537,15 @@ class StartIDE:
             'package.json', 'requirements.txt', 'setup.py', 'pyproject.toml',
             'pom.xml', 'build.gradle', 'Cargo.toml', 'go.mod', 'composer.json',
             'Gemfile', 'Makefile', 'CMakeLists.txt',
-            
+
             # Основные файлы
             'main.py', 'app.py', 'index.js', 'app.js', 'main.js',
             'index.html', 'index.php', 'main.cpp', 'main.go', 'main.rs',
-            
+
             # Папки проекта
             'src/', 'lib/', 'app/', 'components/', 'models/', 'views/'
         ]
-        
+
         for indicator in project_indicators:
             if indicator.endswith('/'):
                 # Проверка папки
@@ -469,67 +555,100 @@ class StartIDE:
                 # Проверка файла
                 if (path / indicator).exists():
                     return True
-        
+
         # Проверяем наличие исходных файлов
         code_extensions = ['.py', '.js', '.ts', '.java', '.cpp', '.c', '.go', '.rs', '.php', '.rb']
         for item in path.iterdir():
             if item.is_file() and item.suffix in code_extensions:
                 return True
-        
+
         return False
-    
+
     def _auto_analyze_and_update(self, analyzer: 'ProjectAutoAnalyzer', project_path: str):
         """Автоанализ проекта и обновление UI"""
         try:
             # Выполняем анализ
             project_data = analyzer.analyze_project(project_path)
-            
+
             if project_data:
                 # Обновляем статус в главном потоке
                 self.root.after(0, lambda: self.status_bar.config(text=f"Проект: {project_data['name']}"))
-                
+
                 # Обновляем информацию о проекте
-                self.root.after(0, lambda: self._update_project_info_display(project_data))
-                
+                self.root.after(0, lambda: self.update_project_info_display(project_data))
+
                 self.logger.info(f"Проанализирован проект: {project_data['name']}")
             else:
                 self.root.after(0, lambda: self.status_bar.config(text=f"Проект: {Path(project_path).name}"))
-                
+
         except Exception as e:
             self.logger.error(f"Ошибка автоанализа проекта: {e}")
             self.root.after(0, lambda: self.status_bar.config(text=f"Проект: {Path(project_path).name} (ошибка анализа)"))
-    
-    def _update_project_info_display(self, project_data: Dict):
+
+    def update_project_info_display(self, project_data: Dict):
         """Обновление отображения информации о проекте"""
         try:
-            # Можно добавить отображение информации о проекте в UI
-            # Например, в статусной строке или отдельной панели
-            
+            # Обновляем индикатор проекта
+            project_name = project_data.get('name', 'Проект')
+            self.project_status_label.config(text=f" {project_name}", foreground="green")
+
+            # Обновляем индикатор Git
+            git_info = project_data.get('git_info', {})
+            if git_info.get('is_git_repo'):
+                branch = git_info.get('current_branch', 'main')
+                self.git_status_indicator.config(text=f" {branch}", foreground="green")
+            else:
+                self.git_status_indicator.config(text=" нет", foreground="gray")
+
             # Показываем основные технологии в статусе
             tech_stack = project_data.get('tech_stack', {})
             if tech_stack.get('languages'):
                 main_lang = tech_stack['languages'][0]['name']
                 current_status = self.status_bar.cget("text")
                 self.status_bar.config(text=f"{current_status} | {main_lang}")
-                
+
         except Exception as e:
             self.logger.error(f"Ошибка обновления информации о проекте: {e}")
-    
+
+    def update_status_indicators(self):
+        """Обновление всех индикаторов статуса"""
+        try:
+            # Индикатор AI
+            if hasattr(self, 'ollama_manager') and self.ollama_manager:
+                if self.ollama_manager.test_connection():
+                    self.ai_status_indicator.config(text=" онлайн", foreground="green")
+                else:
+                    self.ai_status_indicator.config(text=" оффлайн", foreground="red")
+            else:
+                self.ai_status_indicator.config(text=" -", foreground="gray")
+
+            # Индикатор голосового ввода
+            if hasattr(self, 'voice_manager') and self.voice_manager:
+                if hasattr(self, 'is_recording_voice') and self.is_recording_voice:
+                    self.voice_status_indicator.config(text=" запись", foreground="red")
+                else:
+                    self.voice_status_indicator.config(text=" готов", foreground="green")
+            else:
+                self.voice_status_indicator.config(text=" недоступен", foreground="gray")
+
+        except Exception as e:
+            self.logger.error(f"Ошибка обновления индикаторов: {e}")
+
     def refresh_file_tree(self):
         """Обновление дерева файлов"""
         if not self.project_path:
             return
-        
+
         # Очищаем дерево
         for item in self.file_tree.get_children():
             self.file_tree.delete(item)
-        
+
         # Добавляем файлы и папки
         try:
             for item in self.project_path.iterdir():
                 if item.name.startswith('.'):
                     continue
-                    
+
                 if item.is_dir():
                     node = self.file_tree.insert("", "end", text=f"📁 {item.name}", values=("", "folder"))
                     self.add_folder_contents(item, node)
@@ -538,14 +657,14 @@ class StartIDE:
                     self.file_tree.insert("", "end", text=f"📄 {item.name}", values=(size, "file"))
         except Exception as e:
             self.logger.error(f"Ошибка обновления дерева файлов: {e}")
-    
+
     def add_folder_contents(self, folder_path, parent_node):
         """Рекурсивное добавление содержимого папки"""
         try:
             for item in folder_path.iterdir():
                 if item.name.startswith('.'):
                     continue
-                    
+
                 if item.is_dir():
                     node = self.file_tree.insert(parent_node, "end", text=f"📁 {item.name}", values=("", "folder"))
                     self.add_folder_contents(item, node)
@@ -554,88 +673,88 @@ class StartIDE:
                     self.file_tree.insert(parent_node, "end", text=f"📄 {item.name}", values=(size, "file"))
         except Exception as e:
             self.logger.error(f"Ошибка добавления содержимого папки: {e}")
-    
+
     def create_file(self):
         """Создание нового файла"""
         if not self.project_path:
             messagebox.showwarning("Внимание", "Сначала создайте или откройте проект")
             return
-        
+
         file_name = tk.simpledialog.askstring("Создать файл", "Введите имя файла:")
         if file_name:
             try:
                 new_file = self.project_path / file_name
                 new_file.touch()
-                
+
                 if self.project_context:
                     self.project_context.add_file_change(str(new_file), "created")
-                
+
                 self.refresh_file_tree()
                 self.status_bar.config(text=f"Файл создан: {file_name}")
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось создать файл: {e}")
-    
+
     def create_folder(self):
         """Создание новой папки"""
         if not self.project_path:
             messagebox.showwarning("Внимание", "Сначала создайте или откройте проект")
             return
-        
+
         folder_name = tk.simpledialog.askstring("Создать папку", "Введите имя папки:")
         if folder_name:
             try:
                 new_folder = self.project_path / folder_name
                 new_folder.mkdir()
-                
+
                 if self.project_context:
                     self.project_context.add_folder_change(str(new_folder), "created")
-                
+
                 self.refresh_file_tree()
                 self.status_bar.config(text=f"Папка создана: {folder_name}")
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось создать папку: {e}")
-    
+
     def open_file_in_editor(self, event):
         """Открытие файла в редакторе"""
         selection = self.file_tree.selection()
         if selection:
             item = self.file_tree.item(selection[0])
             file_name = item['text'].replace('📁 ', '').replace('📄 ', '')
-            
+
             if item['values'][1] == 'file':
                 try:
                     # Сохраняем текущий файл если есть изменения
                     if self.current_file and self.file_modified:
-                        result = messagebox.askyesno("Несохраненные изменения", 
+                        result = messagebox.askyesno("Несохраненные изменения",
                                                    f"Сохранить изменения в файле {self.current_file.name}?")
                         if result:
                             self.save_current_file()
-                    
+
                     file_path = self.project_path / file_name
                     with open(file_path, 'r', encoding='utf-8') as f:
                         content = f.read()
-                    
+
                     # Загружаем файл в редактор
                     self.editor_text.delete(1.0, tk.END)
                     self.editor_text.insert(1.0, content)
-                    
+
                     # Обновляем интерфейс
                     self.current_file = file_path
                     self.original_content = content
                     self.file_modified = False
                     self.save_button.config(state=tk.DISABLED)
-                    
+
                     # Обновляем метки
                     self.file_path_label.config(text=f"📄 {file_name}", foreground="black")
                     self.file_info_label.config(text=f"Файл: {file_name} | Размер: {len(content)} символов")
                     self.status_bar.config(text=f"Открыт файл: {file_name}")
-                    
+
                     if self.project_context:
                         self.project_context.add_file_change(str(file_path), "opened")
-                        
+
                 except Exception as e:
                     messagebox.showerror("Ошибка", f"Не удалось открыть файл: {e}")
-    
+
     def on_text_changed(self, event=None):
         """Обработка изменений в тексте"""
         if self.current_file and not self.file_modified:
@@ -645,7 +764,7 @@ class StartIDE:
                 self.save_button.config(state=tk.NORMAL)
                 self.file_path_label.config(text=f"📄 {self.current_file.name} *", foreground="red")
                 self.status_bar.config(text=f"Файл изменен: {self.current_file.name}")
-    
+
     def on_text_modified(self, event):
         """Обработка события Modified"""
         try:
@@ -653,295 +772,319 @@ class StartIDE:
             self.on_text_changed()
         except:
             pass
-    
+
     def save_current_file(self):
         """Сохранение текущего файла"""
         if not self.current_file:
             return
-        
+
         try:
             content = self.editor_text.get(1.0, tk.END).rstrip()
             with open(self.current_file, 'w', encoding='utf-8') as f:
                 f.write(content)
-            
+
             # Обновляем состояние
             self.original_content = content
             self.file_modified = False
             self.save_button.config(state=tk.DISABLED)
-            
+
             # Обновляем интерфейс
             self.file_path_label.config(text=f"📄 {self.current_file.name}", foreground="black")
             self.status_bar.config(text=f"Файл сохранен: {self.current_file.name}")
-            
+
             if self.project_context:
                 self.project_context.add_file_change(str(self.current_file), "saved")
-                
+
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось сохранить файл: {e}")
-    
+
     def save_file_as(self):
         """Сохранение файла под новым именем"""
         if not self.current_file:
             return
-            
+
         new_file_path = filedialog.asksaveasfilename(
             title="Сохранить файл как...",
             initialdir=str(self.project_path),
             initialname=self.current_file.name,
-            filetypes=[("Текстовые файлы", "*.txt"), ("Python файлы", "*.py"), 
+            filetypes=[("Текстовые файлы", "*.txt"), ("Python файлы", "*.py"),
                        ("Все файлы", "*.*")]
         )
-        
+
         if new_file_path:
             try:
                 content = self.editor_text.get(1.0, tk.END).rstrip()
                 with open(new_file_path, 'w', encoding='utf-8') as f:
                     f.write(content)
-                
+
                 # Обновляем текущий файл
                 self.current_file = Path(new_file_path)
                 self.original_content = content
                 self.file_modified = False
                 self.save_button.config(state=tk.DISABLED)
-                
+
                 # Обновляем интерфейс
                 self.file_path_label.config(text=f"📄 {self.current_file.name}", foreground="black")
                 self.file_info_label.config(text=f"Файл: {self.current_file.name} | Размер: {len(content)} символов")
                 self.status_bar.config(text=f"Файл сохранен как: {self.current_file.name}")
-                
+
                 # Обновляем дерево файлов
                 self.refresh_file_tree()
-                
+
                 if self.project_context:
                     self.project_context.add_file_change(str(self.current_file), "saved_as")
-                    
+
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось сохранить файл: {e}")
-    
+
     def show_file_context_menu(self, event):
         """Показ контекстного меню для файлов"""
         pass
-    
+
     def toggle_neuro_panel(self):
         """Переключение видимости панели Нейро"""
         if self.right_frame.winfo_viewable():
             self.right_frame.pack_forget()
         else:
             self.right_frame.pack(fill=tk.BOTH, expand=True, side=tk.RIGHT)
-    
+
     def ask_neuro(self):
         """Задать вопрос нейросети"""
         if not self.ollama_manager or not self.project_path:
             messagebox.showwarning("Внимание", "Нейросеть не доступна или проект не открыт")
             return
-        
+
         question = self.neuro_question.get(1.0, tk.END).strip()
         if not question:
             return
-        
+
         def get_response():
             response = self.ollama_manager.ask_about_project(question, str(self.project_path))
-            
+
             self.neuro_response.config(state=tk.NORMAL)
             self.neuro_response.delete(1.0, tk.END)
             self.neuro_response.insert(1.0, f"Вопрос: {question}\n\nОтвет: {response}")
             self.neuro_response.config(state=tk.DISABLED)
-        
+
         threading.Thread(target=get_response, daemon=True).start()
-    
+
     def update_neuro_context(self):
         """Обновление контекста нейросети"""
         if not self.ollama_manager or not self.project_context:
             messagebox.showwarning("Внимание", "Нейросеть не доступна")
             return
-        
+
         threading.Thread(target=self.send_context_to_neuro, daemon=True).start()
-    
+
     def send_context_to_neuro(self):
         """Отправка контекста в нейросеть"""
         try:
             context_data = self.project_context.load_context()
             success = self.ollama_manager.send_project_context(str(self.project_path), context_data)
-            
+
             if success:
                 self.status_bar.config(text="Контекст отправлен в нейросеть")
             else:
                 self.status_bar.config(text="Ошибка отправки контекста")
         except Exception as e:
             self.logger.error(f"Ошибка отправки контекста: {e}")
-    
+
     # ===== МЕТОДЫ ДЛЯ РАБОТЫ С ОБЩИМ ЧАТОМ =====
-    
+
     def refresh_chat(self):
-        """Обновление истории чата"""
-        if not self.shared_chat_manager:
+        """Обновление истории чата из базы данных"""
+        if not self.current_project_id or not hasattr(self, 'chat_manager') or not self.chat_manager:
             return
-        
+
         try:
-            messages = self.shared_chat_manager.get_messages_since(self.last_chat_timestamp)
-            
-            if messages:
-                self.chat_history.config(state=tk.NORMAL)
-                
-                for msg in messages:
-                    timestamp = msg.get("timestamp", "")[11:19]
-                    sender = msg.get("sender", "Unknown")
-                    msg_type = msg.get("type", "text")
-                    content = msg.get("content", "")
-                    file_name = msg.get("file_name", "")
-                    
-                    # Форматируем сообщение
-                    if msg_type == "file" or msg_type == "code_analysis":
-                        self.chat_history.insert(tk.END, f"[{timestamp}] {sender} отправил файл:\n")
-                        if file_name:
-                            self.chat_history.insert(tk.END, f"  📄 {file_name}\n")
-                        if content:
-                            self.chat_history.insert(tk.END, f"  💬 {content}\n")
-                    else:
-                        self.chat_history.insert(tk.END, f"[{timestamp}] {sender}:\n")
-                        self.chat_history.insert(tk.END, f"  💬 {content}\n")
-                    
-                    self.chat_history.insert(tk.END, "-" * 50 + "\n")
-                    
-                    # Обновляем последний таймстамп
-                    if msg.get("timestamp", "") > (self.last_chat_timestamp or ""):
-                        self.last_chat_timestamp = msg.get("timestamp")
-                
-                self.chat_history.see(tk.END)  # Прокручиваем к последнему сообщению
-                self.chat_history.config(state=tk.DISABLED)
-                
-        except Exception as e:
-            self.logger.error(f"Ошибка обновления чата: {e}")
-    
-    def clear_chat(self):
-        """Очистка чата"""
-        if not self.shared_chat_manager:
-            return
-        
-        if messagebox.askyesno("Подтверждение", "Очистить историю чата?"):
-            self.shared_chat_manager.clear_chat()
+            messages = self.chat_manager.get_messages(self.current_project_id, limit=100)
+
             self.chat_history.config(state=tk.NORMAL)
             self.chat_history.delete(1.0, tk.END)
+
+            for msg in messages:
+                timestamp = str(msg.get('timestamp', ''))
+                if len(timestamp) >= 19:
+                    time_str = timestamp[11:19]
+                else:
+                    time_str = timestamp
+                sender = msg.get('sender', 'Unknown')
+                content = msg.get('content', '')
+
+                if sender in ['StartIDE', 'StartOffice']:
+                    self.chat_history.insert(tk.END, f"[{time_str}] Вы:\n")
+                else:
+                    self.chat_history.insert(tk.END, f"[{time_str}] AI:\n")
+                self.chat_history.insert(tk.END, f"  {content}\n")
+                self.chat_history.insert(tk.END, "-" * 40 + "\n")
+
+            self.chat_history.see(tk.END)
             self.chat_history.config(state=tk.DISABLED)
-            self.last_chat_timestamp = None
-            self.status_bar.config(text="Чат очищен")
-    
+
+        except Exception as e:
+            self.logger.error(f"Ошибка обновления чата: {e}")
+
+    def clear_chat(self):
+        """Очистка чата"""
+        if not self.ensure_project_selected():
+            return
+
+        if messagebox.askyesno("Подтверждение", "Очистить историю чата?"):
+            try:
+                # Очищаем чат в базе данных
+                self.chat_manager.clear_chat(self.current_project_id)
+
+                # Очищаем UI
+                self.chat_history.config(state=tk.NORMAL)
+                self.chat_history.delete(1.0, tk.END)
+                self.chat_history.config(state=tk.DISABLED)
+                self.last_chat_timestamp = None
+                self.status_bar.config(text="Чат очищен")
+
+                self.logger.info(f"Чат очищен для проекта {self.current_project_id}")
+
+            except Exception as e:
+                self.logger.error(f"Ошибка очистки чата: {e}")
+                messagebox.showerror("Ошибка", "Не удалось очистить чат")
+
     def send_chat_message(self):
         """Отправка текстового сообщения в чат"""
-        if not self.shared_chat_manager:
+        if not self.current_project_id:
             messagebox.showwarning("Внимание", "Сначала откройте проект")
             return
-        
+
         message = self.chat_message.get(1.0, tk.END).strip()
         if not message:
             return
-        
-        # Отправка в старую систему (для совместимости)
-        success = self.shared_chat_manager.add_message(
-            sender="StartIDE",
-            message_type="text",
-            content=message
-        )
-        
-        # Отправка в новую базу данных
-        if self.db_manager and self.current_project_id:
-            try:
-                self.db_manager.add_chat_message(
-                    self.current_project_id,
-                    "StartIDE",
-                    "text",
-                    message
-                )
-            except Exception as e:
-                self.logger.error(f"Ошибка сохранения в БД: {e}")
-        
-        if success:
-            self.chat_message.delete(1.0, tk.END)
-            self.refresh_chat()
-            self.status_bar.config(text="Сообщение отправлено в чат")
-        else:
-            messagebox.showerror("Ошибка", "Не удалось отправить сообщение")
-    
+
+        # Сохраняем сообщение в базу данных
+        if self.chat_manager:
+            self.chat_manager.add_message(
+                self.current_project_id,
+                "StartIDE",
+                "text",
+                message
+            )
+
+        # Очищаем поле ввода и обновляем чат
+        self.chat_message.delete(1.0, tk.END)
+        self.refresh_chat()
+
+        # Получаем AI ответ с сохранением контекста
+        if self.ollama_manager and self.current_project_id and self.chat_manager:
+            def get_ai_response():
+                try:
+                    chat_context = self.chat_manager.get_ai_context(self.current_project_id)
+                    response = self.ollama_manager.send_chat_message(message, chat_context)
+
+                    if response:
+                        self.chat_manager.add_message(
+                            self.current_project_id,
+                            "AI",
+                            "text",
+                            response
+                        )
+                        self.root.after(0, self.refresh_chat)
+                        self.root.after(0, lambda: self.status_bar.config(text="AI ответ получен"))
+                    else:
+                        self.root.after(0, lambda: self.status_bar.config(text="AI не ответил (проверьте Ollama)"))
+
+                except Exception as e:
+                    self.logger.error(f"Ошибка получения AI ответа: {e}")
+                    self.root.after(0, lambda: self.status_bar.config(text="Ошибка AI ответа"))
+
+            threading.Thread(target=get_ai_response, daemon=True).start()
+
+        self.status_bar.config(text="Сообщение отправлено")
+
     def send_current_file_to_chat(self):
-        """Отправка текущего файла в чат"""
-        if not self.shared_chat_manager:
+        """Отправка текущего файла в чат для анализа"""
+        if not self.current_project_id:
             messagebox.showwarning("Внимание", "Сначала откройте проект")
             return
-        
+
         if not self.current_file:
             messagebox.showwarning("Внимание", "Сначала откройте файл")
             return
-        
+
         try:
-            # Читаем содержимое файла
-            with open(self.current_file, 'r', encoding='utf-8') as f:
+            with open(self.current_file, 'r', encoding='utf-8', errors='replace') as f:
                 file_content = f.read()
-            
-            # Спрашиваем вопрос для анализа
+
             question = tk.simpledialog.askstring(
                 "Отправка файла в чат",
                 "Введите вопрос или комментарий к файлу:",
                 initialvalue="Проанализируй этот файл"
             )
-            
-            if question is None:  # Пользователь отменил
+
+            if question is None:
                 return
-            
-            # Отправляем в чат
-            success = self.shared_chat_manager.send_file_for_analysis(
-                sender="StartIDE",
-                file_path=str(self.current_file),
-                question=question
-            )
-            
-            if success:
-                self.refresh_chat()
-                self.status_bar.config(text=f"Файл {self.current_file.name} отправлен в чат")
-                
-                # Переключаемся на вкладку чата
-                self.center_notebook.select(self.chat_tab)
-            else:
-                messagebox.showerror("Ошибка", "Не удалось отправить файл")
-                
+
+            # Формируем сообщение с содержимым файла
+            message = f"{question}\n\nФайл: {self.current_file.name}\n```\n{file_content[:3000]}\n```"
+
+            # Сохраняем в базу данных
+            if self.chat_manager:
+                self.chat_manager.add_message(
+                    self.current_project_id, "StartIDE", "file_analysis", message
+                )
+
+            self.refresh_chat()
+            self.status_bar.config(text=f"Файл {self.current_file.name} отправлен в чат")
+            self.center_notebook.select(self.chat_tab)
+
+            # Получаем AI ответ
+            if self.ollama_manager and self.chat_manager:
+                def get_analysis():
+                    try:
+                        chat_context = self.chat_manager.get_ai_context(self.current_project_id)
+                        response = self.ollama_manager.send_chat_message(message, chat_context)
+                        if response:
+                            self.chat_manager.add_message(
+                                self.current_project_id, "AI", "file_analysis", response
+                            )
+                            self.root.after(0, self.refresh_chat)
+                    except Exception as e:
+                        self.logger.error(f"Ошибка анализа файла: {e}")
+                threading.Thread(target=get_analysis, daemon=True).start()
+
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось отправить файл: {e}")
-    
+
     def schedule_chat_refresh(self):
         """Планирование автоматического обновления чата"""
-        if self.project_path:
+        if self.current_project_id:
             self.refresh_chat()
-        
-        # Планируем следующее обновление через 5 секунд
         self.root.after(5000, self.schedule_chat_refresh)
-    
+
     def toggle_advanced_voice_input(self):
         """Переключение улучшенного голосового ввода с реальным временем"""
         if not ADVANCED_VOICE_AVAILABLE or not self.advanced_voice_manager:
             messagebox.showwarning("Голосовой ввод", "Улучшенный голосовой ввод недоступен. Установите speechrecognition.")
             return
-        
+
         if not self.is_recording_voice:
             # Начинаем непрерывную запись
             self.voice_button.config(text="⏹️ Остановить запись")
             self.is_recording_voice = True
-            
+
             # Настраиваем чувствительность для русского языка
             self.advanced_voice_manager.set_language("ru-RU")
             self.advanced_voice_manager.set_sensitivity(0.7)
-            
+
             # Устанавливаем callback для частичного распознавания в реальном времени
             def partial_callback(text):
                 # Показываем распознаваемый текст в статусе
                 if hasattr(self, 'voice_status_label'):
                     self.voice_status_label.config(text=f"🗣️: {text}")
-                
+
                 # Умная логика вставки текста без затирания предыдущего
                 current_text = self.neuro_question.get(1.0, tk.END).strip()
                 text_to_add = text.strip()
-                
+
                 if not text_to_add:
                     return
-                
+
                 if not current_text:
                     # Если поле пустое, добавляем первое слово
                     self.neuro_question.insert(tk.END, text_to_add + " ")
@@ -950,13 +1093,13 @@ class StartIDE:
                     words = current_text.split()
                     if words:
                         last_word = words[-1]
-                        
+
                         # Если последнее слово короче 3 символов или похоже на текущее распознавание
                         if len(last_word) <= 3 or (text_to_add.lower().startswith(last_word.lower()) and len(text_to_add) > len(last_word)):
                             # Заменяем последнее слово на более полное
                             words[-1] = text_to_add
                             new_text = " ".join(words) + " "
-                            
+
                             # Обновляем только последние символы
                             self.neuro_question.delete(1.0, tk.END)
                             self.neuro_question.insert(1.0, new_text)
@@ -966,119 +1109,119 @@ class StartIDE:
                     else:
                         # Добавляем как новое слово
                         self.neuro_question.insert(tk.END, text_to_add + " ")
-                
+
                 self.neuro_question.see(tk.END)
-            
+
             # Устанавливаем callback для финального текста
             def final_callback(text):
                 if text.strip():
                     # Обновляем статус
                     if hasattr(self, 'voice_status_label'):
                         self.voice_status_label.config(text=f"✅: {text[:30]}...")
-            
+
             self.advanced_voice_manager.set_partial_text_callback(partial_callback)
             self.advanced_voice_manager.set_text_callback(final_callback)
-            
+
             # Начинаем непрерывную запись
             self.advanced_voice_manager.start_continuous_recording(self.neuro_question)
-            
+
             if self.app_logger:
                 self.app_logger.log_voice_action("start", "Начат улучшенный голосовой ввод (реальное время)")
-            
+
             self.status_bar.config(text="🎤 Голосовой ввод (реальное время)...")
         else:
             # Останавливаем запись
             self.voice_button.config(text="🎤 Голос (реальное время)")
             self.is_recording_voice = False
-            
+
             final_text = self.advanced_voice_manager.stop_recording()
-            
+
             # Обновляем статус
             if hasattr(self, 'voice_status_label'):
                 self.voice_status_label.config(text=f"✅ Готово")
-            
+
             if self.app_logger:
                 self.app_logger.log_voice_action("stop", f"Завершен улучшенный голосовой ввод: {final_text[:50]}...")
-            
+
             self.status_bar.config(text="Готов к работе")
-    
+
     def toggle_voice_input(self):
         """Переключение базового голосового ввода"""
         if not VOICE_AVAILABLE or not self.voice_manager:
             messagebox.showwarning("Голосовой ввод", "Голосовой ввод недоступен. Установите speechrecognition.")
             return
-        
+
         if not self.is_recording_voice:
             # Начинаем запись
             self.voice_button.config(text="⏹️ Остановить запись", style="Accent.TButton")
             self.is_recording_voice = True
-            
+
             # Устанавливаем callback для обработки распознанного текста
             def voice_callback(text):
                 # Вставляем распознанный текст в поле вопроса
                 self.neuro_question.insert(tk.END, text + " ")
                 self.neuro_question.see(tk.END)
-            
+
             self.voice_manager.set_text_callback(voice_callback)
             self.voice_manager.start_recording()
-            
+
             if self.app_logger:
                 self.app_logger.log_voice_action("start", "Начат голосовой ввод вопроса")
-            
+
             self.status_bar.config(text="🎤 Голосовая запись...")
         else:
             # Останавливаем запись
             self.voice_button.config(text="🎤 Голосовой ввод")
             self.is_recording_voice = False
-            
+
             recognized_text = self.voice_manager.stop_recording()
-            
+
             if self.app_logger:
                 self.app_logger.log_voice_action("stop", f"Распознано: {recognized_text[:50]}...")
-            
+
             self.status_bar.config(text="Готов к работе")
-    
+
     def open_project_manager(self):
         """Открыть окно управления проектами"""
         try:
             if not self.db_manager:
                 messagebox.showerror("Ошибка", "База данных не инициализирована")
                 return
-            
+
             ProjectManagerWindow(self.root, self.db_manager, self.app_logger)
-            
+
             if self.app_logger:
                 self.app_logger.log_ui_action("open_project_manager", "Открыто окно управления проектами")
-                
+
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось открыть управление проектами: {e}")
             if self.app_logger:
                 self.app_logger.log_error(f"Ошибка открытия управления проектами: {e}")
-    
+
     def open_file_manager(self):
         """Открыть управление файлами текущего проекта"""
         # Проверяем и устанавливаем current_project_id если нужно
         if not self.current_project_id and self.project_path and self.db_manager:
             self.current_project_id = self.db_manager.get_or_create_project(str(self.project_path))
-        
+
         if not self.current_project_id:
             messagebox.showwarning("Внимание", "Сначала откройте проект")
             return
-        
+
         try:
             # Создаем простое окно управления файлами
             file_window = tk.Toplevel(self.root)
             file_window.title("Управление файлами")
             file_window.geometry("800x600")
             file_window.transient(self.root)
-            
+
             # Получаем файлы проекта
             files = self.file_tracker.get_tracked_files(self.current_project_id)
-            
+
             # Создаем интерфейс
-            ttk.Label(file_window, text=f"Файлы проекта (ID: {self.current_project_id})", 
+            ttk.Label(file_window, text=f"Файлы проекта (ID: {self.current_project_id})",
                      font=("Arial", 12, "bold")).pack(pady=10)
-            
+
             # Дерево файлов
             columns = ("file_path", "description", "tags", "updated")
             files_tree = ttk.Treeview(file_window, columns=columns, show="tree headings")
@@ -1087,178 +1230,414 @@ class StartIDE:
             files_tree.heading("description", text="Описание")
             files_tree.heading("tags", text="Теги")
             files_tree.heading("updated", text="Обновлен")
-            
+
             files_tree.column("#0", width=50)
             files_tree.column("file_path", width=250)
             files_tree.column("description", width=150)
             files_tree.column("tags", width=100)
             files_tree.column("updated", width=120)
-            
+
             # Добавляем файлы
             for file_info in files:
                 tags_str = ', '.join(file_info.get('tags', []))
                 files_tree.insert("", "end", text=str(file_info['id']),
-                               values=(file_info['file_path'], 
+                               values=(file_info['file_path'],
                                       file_info.get('description', ''),
                                       tags_str,
                                       file_info['updated_at'][:16] if file_info['updated_at'] else ""))
-            
+
             files_tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
-            
+
             # Кнопки
             button_frame = ttk.Frame(file_window)
             button_frame.pack(fill=tk.X, padx=10, pady=10)
-            
-            ttk.Button(button_frame, text="🔍 Автообнаружение", 
+
+            ttk.Button(button_frame, text="🔍 Автообнаружение",
                       command=lambda: self.auto_discover_files_for_window(file_window)).pack(side=tk.LEFT, padx=2)
-            ttk.Button(button_frame, text="🔄 Обновить", 
+            ttk.Button(button_frame, text="🔄 Обновить",
                       command=lambda: self.refresh_files_for_window(file_window)).pack(side=tk.LEFT, padx=2)
-            ttk.Button(button_frame, text="Закрыть", 
+            ttk.Button(button_frame, text="Закрыть",
                       command=file_window.destroy).pack(side=tk.RIGHT, padx=2)
-            
+
             if self.app_logger:
                 self.app_logger.log_ui_action("open_file_manager", f"Проект {self.current_project_id}")
-                
+
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось открыть управление файлами: {e}")
             if self.app_logger:
                 self.app_logger.log_error(f"Ошибка открытия управления файлами: {e}")
-    
+
     def auto_discover_files(self):
         """Автообнаружение файлов для текущего проекта"""
         # Проверяем и устанавливаем current_project_id если нужно
         if not self.current_project_id and self.project_path and self.db_manager:
             self.current_project_id = self.db_manager.get_or_create_project(str(self.project_path))
-        
+
         if not self.current_project_id:
             messagebox.showwarning("Внимание", "Сначала откройте проект")
             return
-        
+
         try:
             count = self.file_tracker.auto_discover_files(self.current_project_id)
             messagebox.showinfo("Успех", f"Обнаружено {count} файлов")
-            
+
             if self.app_logger:
                 self.app_logger.log_ui_action("auto_discover_files", f"Проект {self.current_project_id}, файлов: {count}")
-                
+
         except Exception as e:
             messagebox.showerror("Ошибка", f"Ошибка автообнаружения файлов: {e}")
             if self.app_logger:
                 self.app_logger.log_error(f"Ошибка автообнаружения файлов: {e}")
-    
+
     def auto_discover_files_for_window(self, window):
         """Автообнаружение файлов для окна"""
         if not self.current_project_id:
             messagebox.showwarning("Внимание", "Сначала откройте проект")
             return
-        
+
         try:
             count = self.file_tracker.auto_discover_files(self.current_project_id)
             messagebox.showinfo("Успех", f"Обнаружено {count} файлов")
-            
+
             # Обновляем окно
             window.destroy()
             self.open_file_manager()
-            
+
         except Exception as e:
             messagebox.showerror("Ошибка", f"Ошибка автообнаружения файлов: {e}")
-    
+
     def refresh_files_for_window(self, window):
         """Обновление файлов для окна"""
         window.destroy()
         self.open_file_manager()
-    
+
     def show_project_stats(self):
         """Показать статистику проекта"""
         # Проверяем и устанавливаем current_project_id если нужно
         if not self.current_project_id and self.project_path and self.db_manager:
             self.current_project_id = self.db_manager.get_or_create_project(str(self.project_path))
-        
+
         if not self.current_project_id:
             messagebox.showwarning("Внимание", "Сначала откройте проект")
             return
-        
+
         try:
             project_stats = self.project_manager.get_project_stats(self.current_project_id)
             file_stats = self.file_tracker.get_file_stats(self.current_project_id)
-            
+
             stats_text = "=== СТАТИСТИКА ПРОЕКТА ===\n\n"
             stats_text += f"ID проекта: {self.current_project_id}\n"
             stats_text += f"Отслеживаемых файлов: {project_stats.get('tracked_files', 0)}\n"
             stats_text += f"Сообщений в чате: {project_stats.get('chat_messages', 0)}\n"
             stats_text += f"Git коммитов: {project_stats.get('git_commits', 0)}\n"
             stats_text += f"Размер контекста: {project_stats.get('context_size', 0)} байт\n\n"
-            
+
             stats_text += "=== СТАТИСТИКА ФАЙЛОВ ===\n\n"
             stats_text += f"Всего файлов: {file_stats.get('total_files', 0)}\n"
             stats_text += f"Общий размер: {file_stats.get('total_size', 0)} байт\n\n"
-            
+
             if file_stats.get('extensions'):
                 stats_text += "Расширения:\n"
                 for ext, count in file_stats['extensions'].items():
                     stats_text += f"  {ext}: {count}\n"
-            
+
             # Показываем в отдельном окне
             stats_window = tk.Toplevel(self.root)
             stats_window.title("Статистика проекта")
             stats_window.geometry("400x500")
-            
+
             from tkinter import scrolledtext
             text_widget = scrolledtext.ScrolledText(stats_window, wrap=tk.WORD)
             text_widget.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
             text_widget.insert(1.0, stats_text)
             text_widget.config(state=tk.DISABLED)
-            
+
             if self.app_logger:
                 self.app_logger.log_ui_action("show_project_stats", f"Проект {self.current_project_id}")
-                
+
         except Exception as e:
             messagebox.showerror("Ошибка", f"Ошибка получения статистики: {e}")
             if self.app_logger:
                 self.app_logger.log_error(f"Ошибка получения статистики: {e}")
-    
+
     def open_project_by_path(self, project_path):
         """Открыть проект по пути"""
         try:
             self.project_path = Path(project_path)
-            
+
             # Инициализация новой системы баз данных
             if self.db_manager:
                 self.current_project_id = self.db_manager.get_or_create_project(str(self.project_path))
                 self.git_manager = GitManager(str(self.project_path), self.db_manager)
-                
+
                 # Обновляем Git контекст
                 if self.git_manager.is_git_repo:
                     threading.Thread(target=self.git_manager.update_git_context, args=(self.current_project_id,), daemon=True).start()
-            
+
+            # Инициализация чата с sqlite3
+            self.chat_manager = ChatManager(self.db_manager)
+
             # Сохраняем старую систему для совместимости
             self.project_context = ProjectContext(str(self.project_path))
-            self.shared_chat_manager = SharedChatManager(str(self.project_path))
             self.project_context.update_context("project_created", f"Проект открыт в {project_path}")
-            
+
             self.refresh_file_tree()
             self.status_bar.config(text=f"Проект: {self.project_path.name}")
-            
+
             # Отправляем контекст в нейросеть
             if self.ollama_manager:
                 threading.Thread(target=self.send_context_to_neuro, daemon=True).start()
-                
+
             if self.app_logger:
                 self.app_logger.log_project_open(str(self.project_path), self.current_project_id)
-                
+
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось открыть проект: {e}")
             if self.app_logger:
                 self.app_logger.log_error(f"Ошибка открытия проекта: {e}")
-    
+
+    def add_file_to_tracking(self):
+        """Добавить файл в отслеживание"""
+        if not self.current_file:
+            messagebox.showwarning("Внимание", "Нет открытого файла")
+            return
+
+        if not self.ensure_project_selected():
+            return
+
+        try:
+            file_path = str(self.current_file.relative_to(self.project_path))
+
+            # Проверяем, не отслеживается ли уже файл
+            cursor = self.db_manager.conn.execute(
+                "SELECT id FROM files_tracking WHERE project_id = ? AND file_path = ?",
+                (self.current_project_id, file_path)
+            )
+            if cursor.fetchone():
+                messagebox.showinfo("Информация", "Файл уже отслеживается")
+                return
+
+            # Добавляем файл в отслеживание
+            self.db_manager.conn.execute(
+                """
+                INSERT INTO files_tracking (project_id, file_path, is_tracking)
+                VALUES (?, ?, ?)
+                """,
+                (self.current_project_id, file_path, True)
+            )
+            self.db_manager.conn.commit()
+
+            self.refresh_tracking_list()
+            messagebox.showinfo("Успех", f"Файл {file_path} добавлен в отслеживание")
+
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Не удалось добавить файл в отслеживание: {e}")
+
+    def remove_file_from_tracking(self):
+        """Удалить файл из отслеживания"""
+        selection = self.tracking_listbox.curselection()
+        if not selection:
+            messagebox.showwarning("Внимание", "Выберите файл для удаления")
+            return
+
+        if not self.ensure_project_selected():
+            return
+
+        try:
+            selected_file = self.tracking_listbox.get(selection[0])
+            file_path = selected_file.split(" | ")[0]  # Получаем только путь
+
+            # Удаляем файл из отслеживания
+            self.db_manager.conn.execute(
+                "DELETE FROM files_tracking WHERE project_id = ? AND file_path = ?",
+                (self.current_project_id, file_path)
+            )
+            self.db_manager.conn.commit()
+
+            self.refresh_tracking_list()
+            messagebox.showinfo("Успех", f"Файл {file_path} удален из отслеживания")
+
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Не удалось удалить файл из отслеживания: {e}")
+
+    def refresh_tracking_list(self):
+        """Обновить список отслеживаемых файлов"""
+        if not self.current_project_id:
+            return
+
+        try:
+            # Очищаем список
+            self.tracking_listbox.delete(0, tk.END)
+
+            # Получаем отслеживаемые файлы
+            cursor = self.db_manager.conn.execute(
+                """
+                SELECT file_path, line_ranges, created
+                FROM files_tracking
+                WHERE project_id = ? AND is_tracking = TRUE
+                ORDER BY created DESC
+                """,
+                (self.current_project_id,)
+            )
+
+            for row in cursor.fetchall():
+                file_path = row['file_path']
+                line_ranges = row['line_ranges'] or "все строки"
+                last_updated = row['created'] or "никогда"
+
+                display_text = f"{file_path} | {line_ranges} | {last_updated}"
+                self.tracking_listbox.insert(tk.END, display_text)
+
+            # Обновляем статистику
+            self.update_project_stats()
+
+        except Exception as e:
+            self.logger.error(f"Ошибка обновления списка отслеживания: {e}")
+
+    def ensure_project_selected(self):
+        """Проверка и установка выбранного проекта"""
+        if not self.current_project_id and self.project_path and self.db_manager:
+            self.current_project_id = self.db_manager.get_or_create_project(str(self.project_path))
+
+        if not self.current_project_id:
+            messagebox.showwarning("Внимание", "Сначала откройте проект")
+            return False
+        return True
+
+    def update_project_stats(self):
+        """Обновить статистику проекта"""
+        if not self.ensure_project_selected():
+            return
+
+        try:
+            stats_text = "📊 Статистика проекта\n"
+            stats_text += "=" * 30 + "\n\n"
+
+            # Информация о проекте
+            cursor = self.db_manager.conn.execute(
+                "SELECT name, path, created, last_accessed FROM projects WHERE id = ?",
+                (self.current_project_id,)
+            )
+            project = cursor.fetchone()
+
+            if project:
+                stats_text += f"📁 Название: {project['name']}\n"
+                stats_text += f"📍 Путь: {project['path']}\n"
+                stats_text += f"📅 Создан: {project['created']}\n"
+                stats_text += f"👁️ Доступ: {project['last_accessed']}\n\n"
+            else:
+                stats_text += "📁 Проект не найден в базе данных\n\n"
+
+            # Статистика файлов
+            try:
+                cursor = self.db_manager.conn.execute(
+                    "SELECT COUNT(*) as count FROM files_tracking WHERE project_id = ? AND is_tracking = TRUE",
+                    (self.current_project_id,)
+                )
+                tracked_files = cursor.fetchone()['count']
+                stats_text += f"📄 Отслеживаемых файлов: {tracked_files}\n"
+            except:
+                stats_text += f"📄 Отслеживаемых файлов: -\n"
+
+            # Статистика чата
+            try:
+                cursor = self.db_manager.conn.execute(
+                    "SELECT COUNT(*) as count FROM chat_messages WHERE project_id = ?",
+                    (self.current_project_id,)
+                )
+                chat_messages = cursor.fetchone()['count']
+                stats_text += f"💬 Сообщений в чате: {chat_messages}\n"
+            except:
+                stats_text += f"💬 Сообщений в чате: -\n"
+
+            # Статистика Git
+            if hasattr(self, 'git_manager') and self.git_manager.is_git_repo:
+                try:
+                    cursor = self.db_manager.conn.execute(
+                        "SELECT COUNT(*) as count FROM git_commits WHERE project_id = ?",
+                        (self.current_project_id,)
+                    )
+                    git_commits = cursor.fetchone()['count']
+                    stats_text += f"🌿 Git коммитов: {git_commits}\n"
+                except:
+                    stats_text += f"🌿 Git коммитов: -\n"
+            else:
+                stats_text += f"🌿 Git: репозиторий не найден\n"
+
+            # Дополнительная информация
+            stats_text += f"\n📋 ID проекта: {self.current_project_id}\n"
+            stats_text += f"🔧 Путь к проекту: {self.project_path}\n"
+
+            # Обновляем текстовое поле
+            if hasattr(self, 'stats_text'):
+                self.stats_text.config(state=tk.NORMAL)
+                self.stats_text.delete("1.0", tk.END)
+                self.stats_text.insert("1.0", stats_text)
+                self.stats_text.config(state=tk.DISABLED)
+
+        except Exception as e:
+            self.logger.error(f"Ошибка обновления статистики: {e}")
+            # Показываем ошибку в статистике
+            if hasattr(self, 'stats_text'):
+                self.stats_text.config(state=tk.NORMAL)
+                self.stats_text.delete("1.0", tk.END)
+                self.stats_text.insert("1.0", f"Ошибка загрузки статистики: {e}")
+                self.stats_text.config(state=tk.DISABLED)
+
+    def update_git_info(self):
+        """Обновить Git информацию"""
+        if not hasattr(self, 'git_manager') or not self.git_manager.is_git_repo:
+            self.git_text.config(state=tk.NORMAL)
+            self.git_text.delete("1.0", tk.END)
+            self.git_text.insert("1.0", "🌿 Git репозиторий не найден")
+            self.git_text.config(state=tk.DISABLED)
+            return
+
+        try:
+            git_info = "🌿 Git информация\n"
+            git_info += "=" * 30 + "\n\n"
+
+            # Текущая ветка
+            current_branch = self.git_manager.get_current_branch()
+            git_info += f"📍 Текущая ветка: {current_branch}\n"
+
+            # Удаленный репозиторий
+            remote_url = self.git_manager.get_remote_url()
+            if remote_url:
+                git_info += f"🔗 Удаленный репозиторий: {remote_url}\n"
+
+            # Статус
+            status = self.git_manager.get_git_status()
+            git_info += f"📊 Статус: {'Чистый' if status['is_clean'] else 'Есть изменения'}\n"
+
+            if not status['is_clean']:
+                git_info += f"📝 Измененные файлы: {len(status['modified'])}\n"
+                git_info += f"➕ Новые файлы: {len(status['untracked'])}\n"
+
+            # Последние коммиты
+            git_info += "\n📜 Последние коммиты:\n"
+            commits = self.git_manager.get_commits(5)
+            for i, commit in enumerate(commits, 1):
+                git_info += f"{i}. {commit['commit_hash'][:8]} - {commit['message'][:50]}...\n"
+                git_info += f"   👤 {commit['author']} - {commit['date']}\n\n"
+
+            # Обновляем текстовое поле
+            self.git_text.config(state=tk.NORMAL)
+            self.git_text.delete("1.0", tk.END)
+            self.git_text.insert("1.0", git_info)
+            self.git_text.config(state=tk.DISABLED)
+
+        except Exception as e:
+            self.logger.error(f"Ошибка обновления Git информации: {e}")
+
     def quit_app(self):
         """Выход из приложения"""
         if self.current_file and self.file_modified:
-            result = messagebox.askyesno("Несохраненные изменения", 
+            result = messagebox.askyesno("Несохраненные изменения",
                                        f"Сохранить изменения в файле {self.current_file.name} перед выходом?")
             if result:
                 self.save_current_file()
-        
+
         # Закрытие ресурсов
         if self.db_manager:
             self.db_manager.close()
@@ -1266,7 +1645,7 @@ class StartIDE:
             self.voice_manager.cleanup()
         if self.advanced_voice_manager:
             self.advanced_voice_manager.cleanup()
-        
+
         self.root.quit()
         self.root.destroy()
 
@@ -1274,28 +1653,28 @@ class StartIDE:
         """Настройка горячих клавиш"""
         # Control + a - выделить весь текст в активном виджете
         self.root.bind('<Control-a>', self.select_all_text)
-        
+
         # Control + m - использовать микрофон
         self.root.bind('<Control-m>', self.toggle_microphone_hotkey)
-        
+
         # Control + y - вернуть текст вперед (redo)
         self.root.bind('<Control-y>', self.redo_text)
-        
+
         # Control + z - вернуть текст назад (undo)
         self.root.bind('<Control-z>', self.undo_text)
-        
+
         # Control + c - копировать текст
         self.root.bind('<Control-c>', self.copy_text)
-        
+
         # Control + v - вставить текст
         self.root.bind('<Control-v>', self.paste_text)
-        
+
         # Win + v - выбрать текст из буфера
         self.root.bind('<Control-v>', self.paste_text)  # Заменяем Win+v на Ctrl+v для совместимости
-        
+
         # Control + s - сохранить файл
         self.root.bind('<Control-s>', lambda e: self.save_current_file())
-    
+
     def select_all_text(self, event):
         """Выделить весь текст в активном виджете"""
         try:
@@ -1308,7 +1687,7 @@ class StartIDE:
         except:
             pass
         return None
-    
+
     def toggle_microphone_hotkey(self, event):
         """Переключить микрофон по горячей клавише"""
         try:
@@ -1327,7 +1706,7 @@ class StartIDE:
         except:
             pass
         return None
-    
+
     def redo_text(self, event):
         """Вернуть текст вперед (redo)"""
         try:
@@ -1338,7 +1717,7 @@ class StartIDE:
         except:
             pass
         return None
-    
+
     def undo_text(self, event):
         """Вернуть текст назад (undo)"""
         try:
@@ -1349,7 +1728,7 @@ class StartIDE:
         except:
             pass
         return None
-    
+
     def copy_text(self, event):
         """Копировать текст"""
         try:
@@ -1369,7 +1748,7 @@ class StartIDE:
         except:
             pass
         return None
-    
+
     def paste_text(self, event):
         """Вставить текст"""
         try:
@@ -1384,7 +1763,7 @@ class StartIDE:
         except:
             pass
         return None
-    
+
     def run(self):
         """Запуск приложения"""
         self.root.mainloop()
